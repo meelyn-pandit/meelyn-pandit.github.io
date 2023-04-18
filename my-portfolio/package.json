@@ -2,9 +2,11 @@
   "name": "my-portfolio",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://meelyn-pandit.github.io",
   "dependencies": {
     "@craco/craco": "^5.9.0",
     "@heroicons/react": "^1.0.1",
+    "gh-pages": "^5.0.0",
     "react": "^17.0.2",
     "react-bootstrap-icons": "^1.10.3",
     "react-dom": "^17.0.2",
@@ -14,7 +16,9 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+		"deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
