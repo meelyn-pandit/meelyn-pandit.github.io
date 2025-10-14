@@ -5,11 +5,11 @@ import {
   Portal,
   CloseButton,
   Icon,
+//   Menu
 } from "@chakra-ui/react";
-import { Menu } from "lucide-react";
 import Logo from "./Logo";
 import Navbar from "./Navbar";
-
+import { BsList } from "react-icons/bs";
 const MobileDrawer = () => {
   const { open, onToggle } = useDisclosure();
 
@@ -18,7 +18,13 @@ const MobileDrawer = () => {
       <Drawer.Trigger asChild>
         <Button variant="outline" size="sm">
           <Icon color="blue.600">
-            <Menu />
+            {/* <Menu /> */}
+            {/* <div>
+                <i 
+                    className="bi bi-list"
+                    style={{fill: "black"}}></i>
+            </div> */}
+            <BsList />
           </Icon>
         </Button>
       </Drawer.Trigger>

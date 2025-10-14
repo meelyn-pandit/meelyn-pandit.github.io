@@ -1,4 +1,3 @@
-import { ArrowRightSquareFill } from "react-bootstrap-icons"
 import { HStack, VStack, Link, Button } from '@chakra-ui/react'
 
 const links = [
