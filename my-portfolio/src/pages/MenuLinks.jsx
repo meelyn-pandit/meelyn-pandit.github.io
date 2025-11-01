@@ -1,7 +1,7 @@
 import { HStack, VStack, Link, Button } from '@chakra-ui/react'
 
 const links = [
-  { name: "Home", href: "#home" },
+  // { name: "Home", href: "#home" },
   { name: "About", href: "#about" },
   { name: "Skills", href: "#skills" },
   { name: "Contact", href: "#contact" },

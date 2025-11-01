@@ -1,5 +1,5 @@
 import React from "react";
-import Home from "./About"
+import About from "./About"
 import Contact from "./Contact"
 import Projects from "./Projects";
 import MenuLinks from './MenuLinks'
@@ -18,7 +18,7 @@ export default function App() {
   return (
     <>
       <Navbar />
-      <Home />
+      <About />
       <Projects />
       {/* <Skills /> */}
       {/* <ResearchInterests /> */}

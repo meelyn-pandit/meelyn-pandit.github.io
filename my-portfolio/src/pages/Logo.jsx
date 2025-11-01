@@ -6,8 +6,8 @@ export default function Logo() {
             <Text
                 fontSize="lg"
                 fontWeight="bold"
-                color = "blue.600">
-                Meelyn Pandit
+                color = "white">
+                Meelyn Pandit - Logo component
             </Text>
         </Box>
     )
