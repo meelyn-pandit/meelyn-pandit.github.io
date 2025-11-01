@@ -3,26 +3,29 @@ export const projects = [
   {
     title: "Anthropogenic noise alters parental beahvior and nestling developmental patterns, but not fledging condition.",
     subtitle: "Dissertation Ch. 1",
-    description:
+    text:
       "Examined how anthropgenic noise affected parental care behavior and nestling development in Eastern Bluebirds (Sialia sialis)",
     image: "./figure_6_edited.jpg",
     link: "http://dx.doi.org/10.1093/beheco/arab015",
+    value: 'a',
   },
   {
     title: "Environmental conditions lead to shifts in individual communication, which can cause cascading effects on soundscape composition.",
     subtitle: "Dissertation Ch. 2",
-    description:
+    text:
       "Examined how aridity levels, which increased sound attenuation and led to reduced water resources, affected individual vocal behaviors and ultimately the entire vocal communication system of a population using an agent-based model.",
     image: "./terrgrid_06-19_36.jpg",
     link: "https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.9359",
+    value: 'b',
   },
   {
     title: "It’s not the heat, it’s the aridity: avian song activity and species diversity at the community level have consistent, negative responses to increasing aridity ",
     subtitle: "Dissertation, Ch. 3",
-    description:
+    text:
       "Examined if aridity affected vocal detectability and if supplemental water alleviated the cost of vocalizing under arid conditions.",
     image: "./pabu_closeup.jpg",
     link: "https://meelyn-pandit.github.io/", // need to create a check back soon link...
+    value: 'c',
   },
   
   // {

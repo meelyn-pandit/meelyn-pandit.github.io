@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   Separator,
   Stack,
@@ -6,9 +6,24 @@ import {
   Container,
   Box,
   HStack,
+  Accordion,
+  Span,
 } from "@chakra-ui/react"
+import { projects } from '/home/meelyn-pandit/Documents/cloud-development/meelyn-pandit.github.io/my-portfolio/src/data.js'
 
 export default function About({ color }) {
+
+  console.log('projects', projects)
+  const [items, setItems] = useState(projects)
+  const [value, setValue] = useState(() => items.map((c) => c.value))
+
+  // function changeState() {
+  //   if(accordionIndex === 0) {
+  //     setAccordionIndex(1)
+  //   } else if (accordionIndex === 1) {
+  //     setAccordionIndex(0)
+  //   }
+  // }
   return (
     <>
       <Container maxW={"3xl"} id="about">
@@ -26,7 +41,7 @@ export default function About({ color }) {
               <Text 
                 fontWeight={800}
                 textStyle="xl"
-                color={"whiteAlpha.950"}>About</Text>
+                color={color}>About</Text>
             </HStack>
           </Stack>
           <Text
@@ -45,7 +60,7 @@ export default function About({ color }) {
             <br></br>
             In my free time, I enjoy reading, tennis, tinkering with electronics (Arduinos, Raspberry Pi's, etc.), and 3D printing.
             <Text
-              color={"whiteAlpha.950"}
+              color={color}
               fontSize={"xl"}
               px={4}
               fontWeight={800}
@@ -60,6 +75,52 @@ export default function About({ color }) {
               <br className="hidden lg:inline-block"/>B.S. in Biology, Indiana University
             {/* </h2> */}
           </Text>
+        </Stack>
+        <Stack
+          textAlign={"left"}>
+          <Text
+            color={color}
+            fontWeight={800}
+            fontSize={'xl'}
+          >
+            Publications
+            <Separator orientation="horizontal" />
+          </Text>
+          <Accordion.Root
+            collapsible 
+            defaultValue={[]}
+            multiple={false}
+            onValueChange={(e) => {
+              console.log('on value change e', e)
+              setValue(e.value)
+              console.log('new value change e', e)
+            }}
+            // onFocusChange={(newIndex) => setAccordionIndex(newIndex)}
+          >
+            {items.map((item, index) => (
+              <Accordion.Item
+                key={index}
+                value={item.value}
+              >
+                {console.log('item value', item.value)}
+                <Accordion.ItemTrigger>
+                  <Span
+                    flex="1"
+                    color={color}>
+                    {item.title}
+                  </Span>
+                  <Accordion.ItemIndicator />
+                </Accordion.ItemTrigger>
+              <Accordion.ItemContent>
+                <Accordion.ItemBody
+                  color={color}>
+                  {item.text}
+                </Accordion.ItemBody>
+              </Accordion.ItemContent>
+              </Accordion.Item>
+            ))}
+
+          </Accordion.Root>
         </Stack>
       </Container>
     </>

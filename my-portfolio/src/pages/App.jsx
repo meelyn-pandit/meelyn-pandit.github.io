@@ -18,7 +18,8 @@ export default function App() {
   return (
     <>
       <Navbar />
-      <About />
+      <About
+        color={'whiteAlpha.950'} />
       <Projects />
       {/* <Skills /> */}
       {/* <ResearchInterests /> */}
