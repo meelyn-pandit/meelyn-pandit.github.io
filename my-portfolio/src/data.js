@@ -56,10 +56,20 @@ export const research_interests = [
 ];
 
 export const skills = [
-  "JavaScript",
-  "React",
-  "Next.js",
-  "Node",
-  "GraphQL",
-  "Material UI",
+  {
+    title: 'JavaScript',
+    text: 'Developed code for the Sensor Station remote data logger in JavaScript and NodeJs',
+    value: 'a'
+  },
+  {
+    title: 'React',
+    text: 'Developed a data portal website using React components',
+    value: 'b'
+  },
+  {
+    title: 'R',
+    text: 'Analyzed multiple datasets using R',
+    value: 'c',
+  }
+
 ];

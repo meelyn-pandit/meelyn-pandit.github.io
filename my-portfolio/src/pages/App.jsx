@@ -2,6 +2,7 @@ import React from "react";
 import About from "./About"
 import Contact from "./Contact"
 import Projects from "./Projects";
+import Skills from './Skills'
 import MenuLinks from './MenuLinks'
 import Navbar from "./Navbar"
 import Logo from './Logo'
@@ -21,7 +22,9 @@ export default function App() {
       <About
         color={'whiteAlpha.950'} />
       <Projects />
-      {/* <Skills /> */}
+      <Skills 
+        color={'whiteAlpha.950'}
+      />
       {/* <ResearchInterests /> */}
       <Contact />
     </>
