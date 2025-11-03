@@ -6,9 +6,10 @@ import {
   Container,
   Box,
   HStack,
-  Accordion,
-  Span,
+  // Accordion,
+  // Span,
 } from "@chakra-ui/react"
+import AccordionCustom from '../components/ui/accordion.jsx'
 import { projects } from '/home/meelyn-pandit/Documents/cloud-development/meelyn-pandit.github.io/my-portfolio/src/data.js'
 
 export default function About({ color }) {
@@ -17,13 +18,6 @@ export default function About({ color }) {
   const [items, setItems] = useState(projects)
   const [value, setValue] = useState(() => items.map((c) => c.value))
 
-  // function changeState() {
-  //   if(accordionIndex === 0) {
-  //     setAccordionIndex(1)
-  //   } else if (accordionIndex === 1) {
-  //     setAccordionIndex(0)
-  //   }
-  // }
   return (
     <>
       <Container maxW={"3xl"} id="about">
@@ -33,7 +27,10 @@ export default function About({ color }) {
           spacing={{ base: 8, md: 14 }}
           pb= {{ base: 20, md: 36 }}
         >
-          <Stack align="left" direction="row" px={4}>
+          <Stack 
+            align="left" 
+            direction="row" px={4}
+          >
             <HStack mx={4}>
               {/* <Text color={`${color}.400`} fontWeight={800}>
                 <h1>Meelyn Mayank Pandit</h1>
@@ -53,7 +50,7 @@ export default function About({ color }) {
             {/* <h2 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-white"> */}
             I am a former field biologist and ornithologist turned software developer and data scientist.
             <br></br>
-                        <br></br>
+            <br></br>
 
             I focus on delivering effective products in a timely manner and solving client issues.
             <br></br>
@@ -86,7 +83,10 @@ export default function About({ color }) {
             Publications
             <Separator orientation="horizontal" />
           </Text>
-          <Accordion.Root
+          <AccordionCustom
+            items={projects}
+            />
+          {/* <Accordion.Root
             collapsible 
             defaultValue={[]}
             multiple={false}
@@ -120,45 +120,9 @@ export default function About({ color }) {
               </Accordion.Item>
             ))}
 
-          </Accordion.Root>
+          </Accordion.Root> */}
         </Stack>
       </Container>
     </>
-    // <section id="about">
-    //   <div className="container mx-auto flex px-10 py-20 md:flex-row flex-col items-center">
-    //     <div className="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
-    //       <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-white">
-    //         Meelyn Mayank Pandit
-    //         <br />Ph.D. in Biology, University of Oklahoma,
-    //         <br className="hidden lg:inline-block"/>M.S. in Integrative Biology, Oklahoma State University,
-    //         <br className="hidden lg:inline-block"/>B.S. in Biology, Indiana University
-    //       </h1>
-    //       {/* <p className="mb-8 leading-relaxed"> */}
-
-    //         <br className="hidden lg:inline-block" />If you are interested in my work, check out my published papers below:
-    //       {/* </p> */}
-    //       <div className="flex justify-center">
-    //         <a
-    //           href="#contact"
-    //           className="inline-flex text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-green-600 rounded text-lg">
-    //           Current Work
-    //         </a>
-    //         <a
-    //           href="#projects"
-    //           className="ml-4 inline-flex text-gray-400 bg-gray-800 border-0 py-2 px-6 focus:outline-none hover:bg-gray-700 hover:text-white rounded text-lg">
-    //           Past Work
-    //         </a>
-    //       </div>
-    //     </div>
-    //     <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
-    //       <img
-    //         className="object-cover object-center rounded"
-    //         alt="hero"
-    //         src="./IMG_2345.jpg"
-    //         // src="./coding.svg"
-    //       />
-    //     </div>
-    //   </div>
-    // </section>
   );
 }
