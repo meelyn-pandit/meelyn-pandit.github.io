@@ -27,11 +27,11 @@ export default function About({ color }) {
           spacing={{ base: 8, md: 14 }}
           pb= {{ base: 20, md: 36 }}
         >
-          <Stack 
+          {/* <Stack 
             align="left" 
             direction="row" px={4}
-          >
-            <HStack mx={4}>
+          > */}
+            {/* <HStack mx={4}> */}
               {/* <Text color={`${color}.400`} fontWeight={800}>
                 <h1>Meelyn Mayank Pandit</h1>
               </Text> */}
@@ -39,8 +39,8 @@ export default function About({ color }) {
                 fontWeight={800}
                 textStyle="xl"
                 color={color}>About</Text>
-            </HStack>
-          </Stack>
+            {/* </HStack> */}
+          {/* </Stack> */}
           <Text
             color={"whiteAlpha.950"}
             fontSize={"xl"}
