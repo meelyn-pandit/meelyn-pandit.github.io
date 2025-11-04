@@ -111,7 +111,7 @@ const projects = [
         </Stack>
         <Stack
           textAlign={"left"}>
-          <Text
+          {/* <Text
             color={color}
             fontWeight={800}
             fontSize={'xl'}
@@ -122,7 +122,7 @@ const projects = [
           <AccordionCustom
             items={projects}
             color={color}
-            />
+            /> */}
           {/* <Accordion.Root
             collapsible 
             defaultValue={[]}

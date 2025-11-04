@@ -1,48 +1,68 @@
 // import { CodeIcon } from "@heroicons/react/solid";
-import React from "react";
+import {useState} from "react";
 import { BookHalf } from "react-bootstrap-icons"
+import AccordionCustom from "../components/ui/accordion.jsx";
+import { RiJavascriptFill, RiReactjsFill } from "react-icons/ri";
+import { IoStatsChart } from "react-icons/io5";
+import { GiNestBirds, GiDesert } from "react-icons/gi";
+import { IoIosMusicalNotes } from "react-icons/io";
+import {
+  Separator,
+  Stack,
+  Text,
+  Container,
+  Box,
+  HStack,
+  // Accordion,
+  // Span,
+} from "@chakra-ui/react";
 // import { projects } from "../src/data.js"
 
-export default function Projects() {
+export default function Projects(props) {
+  const color = props.color
+  const projects = [
+    {
+      title:
+        "Anthropogenic noise alters parental beahvior and nestling developmental patterns, but not fledging condition.",
+      subtitle: "Dissertation Ch. 1",
+      text: "Examined how anthropgenic noise affected parental care behavior and nestling development in Eastern Bluebirds (Sialia sialis)",
+      image: "./figure_6_edited.jpg",
+      link: "http://dx.doi.org/10.1093/beheco/arab015",
+      value: "a",
+      icon: <GiNestBirds />,
+    },
+    {
+      title:
+        "Environmental conditions lead to shifts in individual communication, which can cause cascading effects on soundscape composition.",
+      subtitle: "Dissertation Ch. 2",
+      text: "Examined how aridity levels, which increased sound attenuation and led to reduced water resources, affected individual vocal behaviors and ultimately the entire vocal communication system of a population using an agent-based model.",
+      image: "./terrgrid_06-19_36.jpg",
+      link: "https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.9359",
+      value: "b",
+      icon: <IoIosMusicalNotes />,
+    },
+    {
+      title:
+        "It’s not the heat, it’s the aridity: avian song activity and species diversity at the community level have consistent, negative responses to increasing aridity ",
+      subtitle: "Dissertation, Ch. 3",
+      text: "Examined if aridity affected vocal detectability and if supplemental water alleviated the cost of vocalizing under arid conditions.",
+      image: "./pabu_closeup.jpg",
+      link: "https://meelyn-pandit.github.io/", // need to create a check back soon link...
+      value: "c",
+      icon: <GiDesert />,
+    },
+  ];
+    console.log('projects', projects)
+    const [items, setItems] = useState(projects)
+    const [value, setValue] = useState(() => items.map((c) => c.value))
+
   return (
-    <h1>Projects</h1>
-    // <section id="projects" className="text-gray-400 bg-gray-900 body-font">
-    //   <div className="container px-5 py-10 mx-auto text-center lg:px-40">
-    //     <div className="flex flex-col w-full mb-20">
-    //       <BookHalf className="mx-auto inline-block w-10 mb-4" />
-    //       <h1 className="sm:text-4xl text-3xl font-medium title-font mb-4 text-white">
-    //       I am a recent PhD graduate that studied how humans change animal behavior, specifically how human-made noise and climate change affect bird behavior.
-    //       </h1>
-    //       <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-    //         Check the publications from my PhD below:
-    //       </p>
-    //     </div>
-    //     <div className="flex flex-wrap -m-4">
-    //       {projects.map((project) => (
-    //         <a
-    //           href={project.link}
-    //           key={project.image}
-    //           className="lg:w-1/2 w-100 p-4">
-    //           <div className="flex relative">
-    //             <img
-    //               alt="gallery"
-    //               className="absolute inset-0 w-full h-full object-cover object-center"
-    //               src={project.image}
-    //             />
-    //             <div className="px-8 py-10 relative z-10 w-full border-4 border-gray-800 bg-gray-900 opacity-0 hover:opacity-100">
-    //               <h2 className="tracking-widest text-sm title-font font-medium text-green-400 mb-1">
-    //                 {project.subtitle}
-    //               </h2>
-    //               <h1 className="title-font text-lg font-medium text-white mb-3">
-    //                 {project.title}
-    //               </h1>
-    //               <p className="leading-relaxed">{project.description}</p>
-    //             </div>
-    //           </div>
-    //         </a>
-    //       ))}
-    //     </div>
-    //   </div>
-    // </section>
+    <Stack textAlign={"left"}>
+      <Text color={color} fontWeight={800} fontSize={"xl"}>
+        Publications
+        <Separator orientation="horizontal" />
+      </Text>
+      <AccordionCustom items={projects} color={color} />
+    </Stack>
   );
 }

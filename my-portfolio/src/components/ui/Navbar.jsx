@@ -3,7 +3,7 @@ import MenuLinks from './MenuLinks'
 import Logo from './Logo'
 import MobileDrawer from './MobileDrawer'
 import { Flex, Box } from "@chakra-ui/react";
-import '../App.css'
+import '../../App.css'
 
 
 export default function Navbar() {
