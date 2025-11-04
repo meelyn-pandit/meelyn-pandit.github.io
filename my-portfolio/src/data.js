@@ -1,3 +1,6 @@
+import { RiJavascriptFill, RiReactjsFill } from "react-icons/ri";
+import { IoStatsChart } from "react-icons/io5";
+
 export const projects = [
   
   {
@@ -55,21 +58,24 @@ export const research_interests = [
   },
 ];
 
-export const skills = [
-  {
-    title: 'JavaScript',
-    text: 'Developed code for the Sensor Station remote data logger in JavaScript and NodeJs',
-    value: 'a'
-  },
-  {
-    title: 'React',
-    text: 'Developed a data portal website using React components',
-    value: 'b'
-  },
-  {
-    title: 'R',
-    text: 'Analyzed multiple datasets using R',
-    value: 'c',
-  }
+// export const skills = [
+//   {
+//     title: 'JavaScript',
+//     text: 'Developed code for the Sensor Station remote data logger in JavaScript and NodeJs',
+//     value: 'a',
+//     icon: <RiJavascriptFill />,
+//   },
+//   {
+//     title: 'React',
+//     text: 'Developed a data portal website using React components',
+//     value: 'b',
+//     icon: <RiReactjsFill />,
+//   },
+//   {
+//     title: 'R',
+//     text: 'Analyzed multiple datasets using R',
+//     value: 'c',
+//     icon: <IoStatsChart />,
+//   }
 
-];
+// ];
