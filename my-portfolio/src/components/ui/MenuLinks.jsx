@@ -41,7 +41,7 @@ export default function MenuLinks({ isMobile = false}) {
         }}
         transition="all 0.2s ease"
       >
-        Get Started
+        Resume
       </Button>
     </LinkComponent>
   )
