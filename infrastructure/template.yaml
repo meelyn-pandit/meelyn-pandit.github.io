@@ -1,0 +1,245 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Meelyn Pandit portfolio — serverless infrastructure.
+  Static React site on S3 + CloudFront, and a contact API on
+  API Gateway (HTTP API) -> Lambda -> Amazon SES, with submissions
+  logged to DynamoDB.
+
+# ---------------------------------------------------------------------------
+# Parameters
+# ---------------------------------------------------------------------------
+Parameters:
+  SenderEmail:
+    Type: String
+    Description: >
+      SES-verified "From" address for contact emails. In the SES sandbox this
+      identity must be verified. Using your Gmail address here works because the
+      same verified identity is used as both sender and recipient.
+    Default: meelyn.pandit@gmail.com
+  RecipientEmail:
+    Type: String
+    Description: SES-verified address that contact submissions are delivered to.
+    Default: meelyn.pandit@gmail.com
+  AllowedOrigin:
+    Type: String
+    Description: >
+      Origin allowed to call the contact API (CORS). Set to your CloudFront or
+      custom-domain URL in production; "*" is fine for first bring-up.
+    Default: "*"
+
+# ---------------------------------------------------------------------------
+# Globals
+# ---------------------------------------------------------------------------
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Architectures: [arm64]
+    Timeout: 10
+    MemorySize: 256
+    Tracing: Active
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  # -------------------------------------------------------------------------
+  # DynamoDB — persistent log of contact submissions
+  # -------------------------------------------------------------------------
+  ContactTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      SSESpecification:
+        SSEEnabled: true
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      TimeToLiveSpecification:
+        AttributeName: expiresAt
+        Enabled: true
+
+  # -------------------------------------------------------------------------
+  # Lambda — contact form handler
+  # -------------------------------------------------------------------------
+  ContactFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Format: esm
+        Minify: true
+        Target: node20
+        Sourcemap: false
+        EntryPoints:
+          - index.mjs
+        # The AWS SDK v3 ships in the Node.js 20 runtime — don't bundle it.
+        External:
+          - "@aws-sdk/*"
+    Properties:
+      CodeUri: src/contact/
+      Handler: index.handler
+      Description: Validates contact submissions, emails via SES, logs to DynamoDB.
+      Environment:
+        Variables:
+          SENDER_EMAIL: !Ref SenderEmail
+          RECIPIENT_EMAIL: !Ref RecipientEmail
+          ALLOWED_ORIGIN: !Ref AllowedOrigin
+          TABLE_NAME: !Ref ContactTable
+      Policies:
+        # Least-privilege: only SendEmail, only from the verified sender identity.
+        - Statement:
+            - Effect: Allow
+              Action:
+                - ses:SendEmail
+              Resource:
+                - !Sub arn:${AWS::Partition}:ses:${AWS::Region}:${AWS::AccountId}:identity/${SenderEmail}
+                - !Sub arn:${AWS::Partition}:ses:${AWS::Region}:${AWS::AccountId}:identity/${RecipientEmail}
+        - DynamoDBWritePolicy:
+            TableName: !Ref ContactTable
+      Events:
+        PostContact:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ContactApi
+            Path: /contact
+            Method: POST
+
+  ContactFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${ContactFunction}
+      RetentionInDays: 30
+
+  # -------------------------------------------------------------------------
+  # API Gateway — HTTP API with CORS
+  # -------------------------------------------------------------------------
+  ContactApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - !Ref AllowedOrigin
+        AllowHeaders:
+          - content-type
+        AllowMethods:
+          - POST
+          - OPTIONS
+        MaxAge: 600
+      Throttle:
+        BurstLimit: 20
+        RateLimit: 10
+
+  # -------------------------------------------------------------------------
+  # S3 — private bucket holding the built React site
+  # -------------------------------------------------------------------------
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SiteBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # Only CloudFront (this distribution) may read objects.
+          - Sid: AllowCloudFrontRead
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub ${SiteBucket.Arn}/*
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${SiteDistribution}
+          # Enforce TLS.
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: "*"
+            Action: s3:*
+            Resource:
+              - !GetAtt SiteBucket.Arn
+              - !Sub ${SiteBucket.Arn}/*
+            Condition:
+              Bool:
+                aws:SecureTransport: false
+
+  # -------------------------------------------------------------------------
+  # CloudFront — CDN in front of the private S3 bucket (via OAC)
+  # -------------------------------------------------------------------------
+  SiteOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub ${AWS::StackName}-site-oac
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  SiteDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: !Sub ${AWS::StackName} portfolio site
+        DefaultRootObject: index.html
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        PriceClass: PriceClass_100
+        Origins:
+          - Id: S3Origin
+            DomainName: !GetAtt SiteBucket.RegionalDomainName
+            OriginAccessControlId: !Ref SiteOAC
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          Compress: true
+          # AWS managed "CachingOptimized" policy.
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+        CustomErrorResponses:
+          # SPA routing: serve index.html for client-side routes.
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+
+# ---------------------------------------------------------------------------
+# Outputs
+# ---------------------------------------------------------------------------
+Outputs:
+  SiteBucketName:
+    Description: S3 bucket to sync the built site into.
+    Value: !Ref SiteBucket
+  DistributionId:
+    Description: CloudFront distribution id (for cache invalidations).
+    Value: !Ref SiteDistribution
+  SiteUrl:
+    Description: Public HTTPS URL of the portfolio site.
+    Value: !Sub https://${SiteDistribution.DomainName}
+  ContactApiUrl:
+    Description: Contact form endpoint (POST). Set as REACT_APP_CONTACT_API_URL.
+    Value: !Sub https://${ContactApi}.execute-api.${AWS::Region}.amazonaws.com/contact

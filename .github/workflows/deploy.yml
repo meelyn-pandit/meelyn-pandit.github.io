@@ -1,0 +1,116 @@
+name: Deploy portfolio to AWS
+
+# Deploys the SAM stack (Lambda/API/SES/DynamoDB + S3/CloudFront), then builds
+# the React app against the live API URL, uploads it to S3, and invalidates the
+# CloudFront cache. Authentication uses GitHub OIDC — no long-lived AWS keys.
+
+on:
+  push:
+    branches: [trunk]
+    paths:
+      - "my-portfolio/**"
+      - "infrastructure/**"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+# Required for GitHub OIDC -> AWS IAM role assumption.
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-portfolio
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+  STACK_NAME: meelyn-portfolio
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install AWS SAM CLI
+        run: pip install --upgrade aws-sam-cli
+
+      # --- Infrastructure -------------------------------------------------
+      - name: SAM build
+        working-directory: infrastructure
+        run: sam build
+
+      - name: SAM deploy
+        working-directory: infrastructure
+        run: |
+          sam deploy \
+            --stack-name "$STACK_NAME" \
+            --region "$AWS_REGION" \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --capabilities CAPABILITY_IAM \
+            --resolve-s3 \
+            --parameter-overrides \
+              "SenderEmail=${{ vars.SENDER_EMAIL || 'meelyn.pandit@gmail.com' }}" \
+              "RecipientEmail=${{ vars.RECIPIENT_EMAIL || 'meelyn.pandit@gmail.com' }}" \
+              "AllowedOrigin=${{ vars.ALLOWED_ORIGIN || '*' }}"
+
+      - name: Read stack outputs
+        id: outputs
+        run: |
+          get() {
+            aws cloudformation describe-stacks --stack-name "$STACK_NAME" \
+              --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" --output text
+          }
+          {
+            echo "api_url=$(get ContactApiUrl)"
+            echo "bucket=$(get SiteBucketName)"
+            echo "distribution=$(get DistributionId)"
+            echo "site_url=$(get SiteUrl)"
+          } >> "$GITHUB_OUTPUT"
+
+      # --- Frontend -------------------------------------------------------
+      - name: Install frontend deps
+        working-directory: my-portfolio
+        run: npm ci
+
+      - name: Build React app
+        working-directory: my-portfolio
+        env:
+          REACT_APP_CONTACT_API_URL: ${{ steps.outputs.outputs.api_url }}
+          CI: "false"
+        run: npm run build
+
+      - name: Upload to S3
+        working-directory: my-portfolio
+        run: |
+          # Long-cache hashed assets, no-cache the HTML entrypoint.
+          aws s3 sync build/ "s3://${{ steps.outputs.outputs.bucket }}/" \
+            --delete --cache-control "public,max-age=31536000,immutable" \
+            --exclude "index.html" --exclude "*.html"
+          aws s3 sync build/ "s3://${{ steps.outputs.outputs.bucket }}/" \
+            --delete --cache-control "no-cache" \
+            --exclude "*" --include "*.html"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ steps.outputs.outputs.distribution }}" \
+            --paths "/*"
+
+      - name: Summary
+        run: echo "Deployed to ${{ steps.outputs.outputs.site_url }}" >> "$GITHUB_STEP_SUMMARY"
