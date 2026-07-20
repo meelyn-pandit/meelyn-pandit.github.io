@@ -67,7 +67,9 @@ jobs:
             --parameter-overrides \
               "SenderEmail=${{ vars.SENDER_EMAIL || 'meelyn.pandit@gmail.com' }}" \
               "RecipientEmail=${{ vars.RECIPIENT_EMAIL || 'meelyn.pandit@gmail.com' }}" \
-              "AllowedOrigin=${{ vars.ALLOWED_ORIGIN || '*' }}"
+              "AllowedOrigin=${{ vars.ALLOWED_ORIGIN || 'https://meelynpandit.com' }}" \
+              "DomainName=${{ vars.DOMAIN_NAME || 'meelynpandit.com' }}" \
+              "CertificateArn=${{ vars.CERTIFICATE_ARN || 'arn:aws:acm:us-east-1:228806730365:certificate/865bbaf3-ee06-4bdd-a92f-b0117c472531' }}"
 
       - name: Read stack outputs
         id: outputs

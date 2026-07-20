@@ -23,6 +23,27 @@ Parameters:
 
       '
     Default: '*'
+  DomainName:
+    Type: String
+    Description: 'Apex custom domain (e.g. meelynpandit.com). Leave blank to serve
+      only on the default *.cloudfront.net domain. When set, "www.<domain>" is added
+      too.
+
+      '
+    Default: ''
+  CertificateArn:
+    Type: String
+    Description: 'ARN of an ACM certificate in us-east-1 covering DomainName and www.DomainName.
+      Required when DomainName is set (CloudFront certs must live in us-east-1).
+
+      '
+    Default: ''
+Conditions:
+  HasCustomDomain:
+    Fn::Not:
+    - Fn::Equals:
+      - Ref: DomainName
+      - ''
 Globals:
   Function:
     Runtime: nodejs22.x
@@ -176,6 +197,24 @@ Resources:
         OriginAccessControlOriginType: s3
         SigningBehavior: always
         SigningProtocol: sigv4
+  WwwRedirectFunction:
+    Type: AWS::CloudFront::Function
+    Condition: HasCustomDomain
+    Properties:
+      Name:
+        Fn::Sub: ${AWS::StackName}-www-to-apex
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Redirect www subdomain to the apex domain.
+        Runtime: cloudfront-js-2.0
+      FunctionCode: "function handler(event) {\n  var request = event.request;\n \
+        \ var host = request.headers.host.value;\n  if (host.slice(0, 4) === 'www.')\
+        \ {\n    var apex = host.slice(4);\n    var qs = request.querystring\n   \
+        \   ? '?' + Object.keys(request.querystring)\n          .map(function (k)\
+        \ { return k + '=' + request.querystring[k].value; })\n          .join('&')\n\
+        \      : '';\n    return {\n      statusCode: 301,\n      statusDescription:\
+        \ 'Moved Permanently',\n      headers: { location: { value: 'https://' + apex\
+        \ + request.uri + qs } },\n    };\n  }\n  return request;\n}\n"
   SiteDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -187,6 +226,12 @@ Resources:
         HttpVersion: http2and3
         IPV6Enabled: true
         PriceClass: PriceClass_100
+        Aliases:
+          Fn::If:
+          - HasCustomDomain
+          - - Ref: DomainName
+            - Fn::Sub: www.${DomainName}
+          - Ref: AWS::NoValue
         Origins:
         - Id: S3Origin
           DomainName:
@@ -202,6 +247,15 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           Compress: true
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          FunctionAssociations:
+            Fn::If:
+            - HasCustomDomain
+            - - EventType: viewer-request
+                FunctionARN:
+                  Fn::GetAtt:
+                  - WwwRedirectFunction
+                  - FunctionMetadata.FunctionARN
+            - Ref: AWS::NoValue
         CustomErrorResponses:
         - ErrorCode: 403
           ResponseCode: 200
@@ -210,7 +264,13 @@ Resources:
           ResponseCode: 200
           ResponsePagePath: /index.html
         ViewerCertificate:
-          CloudFrontDefaultCertificate: true
+          Fn::If:
+          - HasCustomDomain
+          - AcmCertificateArn:
+              Ref: CertificateArn
+            SslSupportMethod: sni-only
+            MinimumProtocolVersion: TLSv1.2_2021
+          - CloudFrontDefaultCertificate: true
 Outputs:
   SiteBucketName:
     Description: S3 bucket to sync the built site into.
@@ -228,3 +288,14 @@ Outputs:
     Description: Contact form endpoint (POST). Set as REACT_APP_CONTACT_API_URL.
     Value:
       Fn::Sub: https://${ContactApi}.execute-api.${AWS::Region}.amazonaws.com/contact
+  CustomDomainUrl:
+    Condition: HasCustomDomain
+    Description: Public HTTPS URL on the custom domain.
+    Value:
+      Fn::Sub: https://${DomainName}
+  DistributionDomainName:
+    Description: CloudFront domain name (Route 53 alias target for the custom domain).
+    Value:
+      Fn::GetAtt:
+      - SiteDistribution
+      - DomainName

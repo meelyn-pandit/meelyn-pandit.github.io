@@ -21,5 +21,7 @@ resolve_s3 = true
 parameter_overrides = [
   "SenderEmail=meelyn.pandit@gmail.com",
   "RecipientEmail=meelyn.pandit@gmail.com",
-  "AllowedOrigin=*",
+  "AllowedOrigin=https://meelynpandit.com",
+  "DomainName=meelynpandit.com",
+  "CertificateArn=arn:aws:acm:us-east-1:228806730365:certificate/865bbaf3-ee06-4bdd-a92f-b0117c472531",
 ]

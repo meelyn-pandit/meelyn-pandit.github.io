@@ -21,4 +21,5 @@ Sourcemap = false
 EntryPoints = ["index.mjs"]
 External = ["@aws-sdk/*"]
 
+
 [layer_build_definitions]
