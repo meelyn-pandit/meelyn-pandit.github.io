@@ -2,14 +2,13 @@
   "name": "my-portfolio",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://meelyn-pandit.github.io",
+  "homepage": "https://meelynpandit.com",
   "dependencies": {
     "@chakra-ui/react": "2.8.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@heroicons/react": "^1.0.1",
     "framer-motion": "^10.18.0",
-    "gh-pages": "^5.0.0",
     "nodemailer": "^9.0.3",
     "nodemon": "^3.1.14",
     "react": "^18.2.0",
@@ -21,9 +20,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
