@@ -1,35 +1,53 @@
 // src/components/Navbar.js
-import { ArrowRightSquareFill } from "react-bootstrap-icons"
-// import { ArrowRightIcon } from "@heroicons/react/solid";
 import React from "react";
+import { Box, Flex, Link, HStack } from "@chakra-ui/react";
+import { ArrowRightSquareFill } from "react-bootstrap-icons";
 
 export default function Navbar() {
   return (
-    <header className="bg-gray-800 md:sticky top-0 z-10">
-      <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-        <a className="title-font font-medium text-white mb-4 md:mb-0">
-          <a href="#about" className="ml-3 text-xl">
-            Home
-          </a>
-        </a>
-        <nav className="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-700	flex flex-wrap items-center text-base justify-center">
-          <a href="#projects" className="mr-5 hover:text-white">
-            Published Research
-          </a>
-          <a href="#skills" className="mr-5 hover:text-white">
-            Skills
-          </a>
-          <a href="#testimonials" className="mr-5 hover:text-white">
-            Research Interests
-          </a>
-        </nav>
-        <a
+    <Box as="header" bg="gray.800" position={{ md: "sticky" }} top="0" zIndex={10}>
+      <Flex
+        maxW="6xl"
+        mx="auto"
+        px={5}
+        py={5}
+        wrap="wrap"
+        direction={{ base: "column", md: "row" }}
+        align="center">
+        <Link href="#about" fontWeight="medium" color="white" fontSize="xl" mb={{ base: 4, md: 0 }}>
+          Home
+        </Link>
+        <HStack
+          as="nav"
+          spacing={5}
+          ml={{ md: 4 }}
+          mr={{ md: "auto" }}
+          py={{ md: 1 }}
+          pl={{ md: 4 }}
+          borderLeft={{ md: "1px solid" }}
+          borderColor={{ md: "gray.700" }}
+          wrap="wrap"
+          justify="center"
+          fontSize="base">
+          <Link href="#projects" _hover={{ color: "white" }}>Projects</Link>
+          <Link href="#skills" _hover={{ color: "white" }}>Skills</Link>
+          <Link href="#publications" _hover={{ color: "white" }}>Publications</Link>
+          <Link href="#research-interests" _hover={{ color: "white" }}>Research Background</Link>
+        </HStack>
+        <Link
           href="#contact"
-          className="inline-flex items-center bg-gray-800 border-0 py-1 px-3 focus:outline-none hover:bg-gray-700 rounded text-base mt-4 md:mt-0">
+          display="inline-flex"
+          alignItems="center"
+          bg="gray.800"
+          py={1}
+          px={3}
+          borderRadius="md"
+          mt={{ base: 4, md: 0 }}
+          _hover={{ bg: "gray.700", textDecoration: "none" }}>
           Contact Me
-          <ArrowRightSquareFill className="w-4 h-4 ml-1" />
-        </a>
-      </div>
-    </header>
+          <ArrowRightSquareFill style={{ width: 16, height: 16, marginLeft: 4 }} />
+        </Link>
+      </Flex>
+    </Box>
   );
 }

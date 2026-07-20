@@ -1,47 +1,61 @@
-// import { CodeIcon } from "@heroicons/react/solid";
 import React from "react";
-import { BookHalf } from "react-bootstrap-icons"
+import { Box, Flex, Heading, Text, Link, chakra } from "@chakra-ui/react";
+import { BookHalf } from "react-bootstrap-icons";
 import { projects } from "../data";
+
+const BookIcon = chakra(BookHalf);
 
 export default function Projects() {
   return (
-    <section id="projects" className="text-gray-400 bg-gray-900 body-font">
-      <div className="container px-5 py-10 mx-auto text-center lg:px-40">
-        <div className="flex flex-col w-full mb-20">
-          <BookHalf className="mx-auto inline-block w-10 mb-4" />
-          <h1 className="sm:text-4xl text-3xl font-medium title-font mb-4 text-white">
-          I am a recent PhD graduate that studied how humans change animal behavior, specifically how human-made noise and climate change affect bird behavior.
-          </h1>
-          <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-            Check the publications from my PhD below:
-          </p>
-        </div>
-        <div className="flex flex-wrap -m-4">
+    <Box as="section" id="projects" color="gray.400" bg="gray.900">
+      <Box maxW={{ lg: "5xl" }} mx="auto" px={5} py={10} textAlign="center">
+        <Flex direction="column" w="full" mb={20}>
+          <BookIcon mx="auto" boxSize={10} mb={4} />
+          <Heading as="h1" size={{ base: "lg", sm: "xl" }} mb={4} fontWeight="medium" color="white">
+            Full-stack software engineer building production data pipelines, APIs, and self-service applications.
+          </Heading>
+          <Text maxW={{ lg: "2xl" }} mx="auto" lineHeight="relaxed">
+            A few things I've built recently:
+          </Text>
+        </Flex>
+        <Flex wrap="wrap" m={-4}>
           {projects.map((project) => (
-            <a
+            <Link
               href={project.link}
-              key={project.image}
-              className="lg:w-1/2 w-100 p-4">
-              <div className="flex relative">
-                <img
-                  alt="gallery"
-                  className="absolute inset-0 w-full h-full object-cover object-center"
-                  src={project.image}
-                />
-                <div className="px-8 py-10 relative z-10 w-full border-4 border-gray-800 bg-gray-900 opacity-0 hover:opacity-100">
-                  <h2 className="tracking-widest text-sm title-font font-medium text-green-400 mb-1">
-                    {project.subtitle}
-                  </h2>
-                  <h1 className="title-font text-lg font-medium text-white mb-3">
-                    {project.title}
-                  </h1>
-                  <p className="leading-relaxed">{project.description}</p>
-                </div>
-              </div>
-            </a>
+              target="_blank"
+              rel="noopener noreferrer"
+              key={project.title}
+              w={{ base: "full", lg: "1/2" }}
+              p={4}
+              _hover={{ textDecoration: "none" }}
+              role="group">
+              <Box
+                px={8}
+                py={10}
+                w="full"
+                h="full"
+                border="4px solid"
+                borderColor="gray.800"
+                bg="gray.900"
+                transition="border-color 0.2s"
+                _groupHover={{ borderColor: "brand.400" }}>
+                <Text
+                  letterSpacing="widest"
+                  fontSize="sm"
+                  fontWeight="medium"
+                  color="brand.400"
+                  mb={1}>
+                  {project.subtitle}
+                </Text>
+                <Heading as="h2" fontSize="lg" fontWeight="medium" color="white" mb={3}>
+                  {project.title}
+                </Heading>
+                <Text lineHeight="relaxed">{project.description}</Text>
+              </Box>
+            </Link>
           ))}
-        </div>
-      </div>
-    </section>
+        </Flex>
+      </Box>
+    </Box>
   );
 }

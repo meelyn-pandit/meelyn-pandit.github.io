@@ -1,44 +1,34 @@
-// src/components/Testimonials
-
+// src/components/research_interests.js
 import React from "react";
-import { BarChartLine, ClipboardDataFill } from "react-bootstrap-icons"
-// import { TerminalIcon, UsersIcon } from "@heroicons/react/solid";
+import { Box, Flex, Heading, Text, Image, chakra } from "@chakra-ui/react";
+import { BarChartLine, ClipboardDataFill } from "react-bootstrap-icons";
 import { research_interests } from "../data";
+
+const ChartIcon = chakra(BarChartLine);
+const ClipboardIcon = chakra(ClipboardDataFill);
 
 export default function ResearchInterests() {
   return (
-    <section id="research interests">
-      <div className="container px-5 py-10 mx-auto text-center">
-        <BarChartLine className="w-10 inline-block mb-4" />
-        <h1 className="sm:text-4xl text-3xl font-medium title-font text-white mb-12">
-          Research Interests
-        </h1>
-        <div className="flex flex-wrap m-4">
+    <Box as="section" id="research-interests">
+      <Box maxW="6xl" mx="auto" px={5} py={10} textAlign="center">
+        <ChartIcon boxSize={10} display="inline-block" mb={4} />
+        <Heading as="h1" size={{ base: "lg", sm: "xl" }} fontWeight="medium" color="white" mb={12}>
+          Research Background
+        </Heading>
+        <Flex wrap="wrap" m={4}>
           {research_interests.map((interest) => (
-            <div className="p-4 md:w-1/2 w-full">
-              <div className="h-full bg-gray-800 bg-opacity-40 p-8 rounded">
-                <ClipboardDataFill className="block w-8 text-gray-500 mb-4" />
-                <p className="leading-relaxed mb-6">{interest.quote}</p>
-                <div className="inline-flex items-center">
-                  <img
-                    alt="interest"
-                    src={interest.image}
-                    // className="w-12 rounded-full flex-shrink-0 object-cover object-center"
-                  />
-                  {/* <span className="flex-grow flex flex-col pl-4">
-                    <span className="title-font font-medium text-white">
-                      {interest.name}
-                    </span>
-                    <span className="text-gray-500 text-sm uppercase">
-                      {interest.company}
-                    </span>
-                  </span> */}
-                </div>
-              </div>
-            </div>
+            <Box key={interest.image} p={4} w={{ base: "full", md: "1/2" }}>
+              <Box h="full" bg="rgba(26, 32, 44, 0.4)" p={8} borderRadius="md">
+                <ClipboardIcon boxSize={8} display="block" color="gray.500" mb={4} />
+                <Text lineHeight="relaxed" mb={6}>{interest.quote}</Text>
+                <Flex display="inline-flex" align="center">
+                  <Image alt="interest" src={interest.image} />
+                </Flex>
+              </Box>
+            </Box>
           ))}
-        </div>
-      </div>
-    </section>
+        </Flex>
+      </Box>
+    </Box>
   );
 }

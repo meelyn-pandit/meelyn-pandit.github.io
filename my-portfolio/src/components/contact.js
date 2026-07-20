@@ -1,94 +1,82 @@
 // src/components/Contact.js
-
 import React from "react";
+import { Box, Flex, Heading, Text, Button, chakra } from "@chakra-ui/react";
+import { Linkedin } from "react-bootstrap-icons";
+
+const LinkedinIcon = chakra(Linkedin);
+
+const LINKEDIN_URL = "https://www.linkedin.com/in/meelyn-pandit-ph-d-51915977/";
 
 export default function Contact() {
   return (
-    <section id="contact" className="relative">
-      <div className="container px-5 py-10 mx-auto flex sm:flex-nowrap flex-wrap">
-        <div className="lg:w-2/3 md:w-1/2 bg-gray-900 rounded-lg overflow-hidden sm:mr-10 p-10 flex items-end justify-start relative">
-          {/* <iframe
-            width="100%"
-            height="100%"
-            title="map"
-            className="absolute inset-0"
-            frameBorder={0}
-            marginHeight={0}
-            marginWidth={0}
-            style={{ filter: "opacity(0.7)" }}
-            src="https://www.google.com/maps/embed/v1/place?q=97+warren+st+new+york+city&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
-          /> */}
-          {/* <div className="bg-gray-900 relative flex flex-wrap py-6 rounded shadow-md">
-            <div className="lg:w-1/2 px-6">
-              <h2 className="title-font font-semibold text-white tracking-widest text-xs">
-                ADDRESS
-              </h2>
-              <p className="mt-1">
-                97 Warren St. <br />
-                New York, NY 10007
-              </p>
-            </div>
-            <div className="lg:w-1/2 px-6 mt-4 lg:mt-0">
-              <h2 className="title-font font-semibold text-white tracking-widest text-xs">
-                EMAIL
-              </h2>
-              <a className="text-indigo-400 leading-relaxed">
-                meelyn.pandit@celltracktech.com
-              </a>
-            </div>
-          </div> */}
-        </div>
-        <form
-          netlify
+    <Box as="section" id="contact" position="relative">
+      <Flex maxW="6xl" mx="auto" px={5} py={10} direction="column" align="center" textAlign="center">
+        <Heading as="h2" color="white" size={{ base: "lg", sm: "xl" }} mb={1} fontWeight="medium">
+          Contact Me
+        </Heading>
+        <Text lineHeight="relaxed" mb={5} maxW="lg">
+          Have any questions about my work or background? Connect with me on LinkedIn:
+        </Text>
+        <Button
+          as="a"
+          href={LINKEDIN_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          leftIcon={<LinkedinIcon boxSize={5} />}
+          color="white"
+          bg="blue.500"
+          _hover={{ bg: "blue.600", textDecoration: "none" }}
+          fontSize="lg"
+          borderRadius="md">
+          Connect on LinkedIn
+        </Button>
+      </Flex>
+
+      {/* Contact form — saved for later use
+      <Flex maxW="6xl" mx="auto" px={5} py={10} wrap={{ base: "wrap", sm: "nowrap" }}>
+        <Box
+          as="form"
           name="contact"
-          className="lg:w-1/3 md:w-1/2 flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0">
-          <h2 className="text-white sm:text-4xl text-3xl mb-1 font-medium title-font">
+          data-netlify="true"
+          w={{ base: "full", md: "1/2", lg: "1/3" }}
+          display="flex"
+          flexDirection="column"
+          ml={{ md: "auto" }}
+          py={{ md: 8 }}
+          mt={{ base: 8, md: 0 }}>
+          <Heading as="h2" color="white" size={{ base: "lg", sm: "xl" }} mb={1} fontWeight="medium">
             Contact Me
-          </h2>
-          <p className="leading-relaxed mb-5">
-            Have any questions about my research or the Terra Project? Feel free to contact me below:
-          </p>
-          <div className="relative mb-4">
-            <label htmlFor="name" className="leading-7 text-sm text-gray-400">
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              className="w-full bg-gray-800 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+          </Heading>
+          <Text lineHeight="relaxed" mb={5}>
+            Have any questions about my work or background? Feel free to contact me below:
+          </Text>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="name" fontSize="sm" color="gray.400" lineHeight="7">Name</FormLabel>
+            <Input
+              type="text" id="name" name="name" bg="gray.800" border="1px solid" borderColor="gray.700"
+              color="gray.100" _focus={{ borderColor: "brand.500", boxShadow: "0 0 0 2px var(--chakra-colors-brand-600)" }}
             />
-          </div>
-          <div className="relative mb-4">
-            <label htmlFor="email" className="leading-7 text-sm text-gray-400">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full bg-gray-800 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="email" fontSize="sm" color="gray.400" lineHeight="7">Email</FormLabel>
+            <Input
+              type="email" id="email" name="email" bg="gray.800" border="1px solid" borderColor="gray.700"
+              color="gray.100" _focus={{ borderColor: "brand.500", boxShadow: "0 0 0 2px var(--chakra-colors-brand-600)" }}
             />
-          </div>
-          <div className="relative mb-4">
-            <label
-              htmlFor="message"
-              className="leading-7 text-sm text-gray-400">
-              Message
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              className="w-full bg-gray-800 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 h-32 text-base outline-none text-gray-100 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="message" fontSize="sm" color="gray.400" lineHeight="7">Message</FormLabel>
+            <Textarea
+              id="message" name="message" h={32} resize="none" bg="gray.800" border="1px solid" borderColor="gray.700"
+              color="gray.100" _focus={{ borderColor: "brand.500", boxShadow: "0 0 0 2px var(--chakra-colors-brand-600)" }}
             />
-          </div>
-          <button
-            type="submit"
-            className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
+          </FormControl>
+          <Button type="submit" color="white" bg="blue.500" _hover={{ bg: "blue.600" }} fontSize="lg" borderRadius="md">
             Submit
-          </button>
-        </form>
-      </div>
-    </section>
+          </Button>
+        </Box>
+      </Flex>
+      */}
+    </Box>
   );
 }
