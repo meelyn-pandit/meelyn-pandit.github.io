@@ -1,0 +1,14 @@
+{
+  "name": "contact-function",
+  "version": "1.0.0",
+  "description": "Portfolio contact form Lambda: validates input, sends via SES, logs to DynamoDB.",
+  "type": "module",
+  "main": "index.mjs",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.658.0",
+    "@aws-sdk/client-dynamodb": "^3.658.0",
+    "@aws-sdk/lib-dynamodb": "^3.658.0",
+    "esbuild": "^0.24.0"
+  }
+}

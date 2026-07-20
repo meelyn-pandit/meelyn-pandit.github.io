@@ -1,0 +1,27 @@
+# SAM CLI deployment configuration.
+# Deploy with:  sam build && sam deploy --profile personal
+# First-time interactive setup:  sam deploy --guided --profile personal
+version = 0.1
+
+[default.global.parameters]
+stack_name = "meelyn-portfolio"
+
+[default.build.parameters]
+cached = true
+parallel = true
+
+[default.deploy.parameters]
+stack_name = "meelyn-portfolio"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+# CloudFront + S3 static hosting works from any region; us-east-1 keeps SES,
+# ACM (for a future custom domain), and CloudFront management in one place.
+parameter_overrides = [
+  "SenderEmail=meelyn.pandit@gmail.com",
+  "RecipientEmail=meelyn.pandit@gmail.com",
+  "AllowedOrigin=https://meelynpandit.com",
+  "DomainName=meelynpandit.com",
+  "CertificateArn=arn:aws:acm:us-east-1:228806730365:certificate/865bbaf3-ee06-4bdd-a92f-b0117c472531",
+]
