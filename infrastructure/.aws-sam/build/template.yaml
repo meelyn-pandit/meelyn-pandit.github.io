@@ -1,0 +1,230 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: "Meelyn Pandit portfolio \u2014 serverless infrastructure. Static React\
+  \ site on S3 + CloudFront, and a contact API on API Gateway (HTTP API) -> Lambda\
+  \ -> Amazon SES, with submissions logged to DynamoDB.\n"
+Parameters:
+  SenderEmail:
+    Type: String
+    Description: 'SES-verified "From" address for contact emails. In the SES sandbox
+      this identity must be verified. Using your Gmail address here works because
+      the same verified identity is used as both sender and recipient.
+
+      '
+    Default: meelyn.pandit@gmail.com
+  RecipientEmail:
+    Type: String
+    Description: SES-verified address that contact submissions are delivered to.
+    Default: meelyn.pandit@gmail.com
+  AllowedOrigin:
+    Type: String
+    Description: 'Origin allowed to call the contact API (CORS). Set to your CloudFront
+      or custom-domain URL in production; "*" is fine for first bring-up.
+
+      '
+    Default: '*'
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Architectures:
+    - arm64
+    Timeout: 10
+    MemorySize: 256
+    Tracing: Active
+    LoggingConfig:
+      LogFormat: JSON
+Resources:
+  ContactTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      SSESpecification:
+        SSEEnabled: true
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      TimeToLiveSpecification:
+        AttributeName: expiresAt
+        Enabled: true
+  ContactFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        EntryPoints:
+        - index.mjs
+        External:
+        - '@aws-sdk/*'
+        Format: esm
+        Minify: true
+        OutExtension:
+        - .js=.mjs
+        Sourcemap: false
+        Target: node22
+      SamResourceId: ContactFunction
+    Properties:
+      CodeUri: ContactFunction
+      Handler: index.handler
+      Description: Validates contact submissions, emails via SES, logs to DynamoDB.
+      Environment:
+        Variables:
+          SENDER_EMAIL:
+            Ref: SenderEmail
+          RECIPIENT_EMAIL:
+            Ref: RecipientEmail
+          ALLOWED_ORIGIN:
+            Ref: AllowedOrigin
+          TABLE_NAME:
+            Ref: ContactTable
+      Policies:
+      - Statement:
+        - Effect: Allow
+          Action:
+          - ses:SendEmail
+          Resource:
+          - Fn::Sub: arn:${AWS::Partition}:ses:${AWS::Region}:${AWS::AccountId}:identity/${SenderEmail}
+          - Fn::Sub: arn:${AWS::Partition}:ses:${AWS::Region}:${AWS::AccountId}:identity/${RecipientEmail}
+      - DynamoDBWritePolicy:
+          TableName:
+            Ref: ContactTable
+      Events:
+        PostContact:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: ContactApi
+            Path: /contact
+            Method: POST
+  ContactFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName:
+        Fn::Sub: /aws/lambda/${ContactFunction}
+      RetentionInDays: 30
+  ContactApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+        - Ref: AllowedOrigin
+        AllowHeaders:
+        - content-type
+        AllowMethods:
+        - POST
+        - OPTIONS
+        MaxAge: 600
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 20
+        ThrottlingRateLimit: 10
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+        - ObjectOwnership: BucketOwnerEnforced
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: SiteBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: AllowCloudFrontRead
+          Effect: Allow
+          Principal:
+            Service: cloudfront.amazonaws.com
+          Action: s3:GetObject
+          Resource:
+            Fn::Sub: ${SiteBucket.Arn}/*
+          Condition:
+            StringEquals:
+              AWS:SourceArn:
+                Fn::Sub: arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${SiteDistribution}
+        - Sid: DenyInsecureTransport
+          Effect: Deny
+          Principal: '*'
+          Action: s3:*
+          Resource:
+          - Fn::GetAtt:
+            - SiteBucket
+            - Arn
+          - Fn::Sub: ${SiteBucket.Arn}/*
+          Condition:
+            Bool:
+              aws:SecureTransport: false
+  SiteOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name:
+          Fn::Sub: ${AWS::StackName}-site-oac
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+  SiteDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment:
+          Fn::Sub: ${AWS::StackName} portfolio site
+        DefaultRootObject: index.html
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        PriceClass: PriceClass_100
+        Origins:
+        - Id: S3Origin
+          DomainName:
+            Fn::GetAtt:
+            - SiteBucket
+            - RegionalDomainName
+          OriginAccessControlId:
+            Ref: SiteOAC
+          S3OriginConfig:
+            OriginAccessIdentity: ''
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          Compress: true
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+        CustomErrorResponses:
+        - ErrorCode: 403
+          ResponseCode: 200
+          ResponsePagePath: /index.html
+        - ErrorCode: 404
+          ResponseCode: 200
+          ResponsePagePath: /index.html
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+Outputs:
+  SiteBucketName:
+    Description: S3 bucket to sync the built site into.
+    Value:
+      Ref: SiteBucket
+  DistributionId:
+    Description: CloudFront distribution id (for cache invalidations).
+    Value:
+      Ref: SiteDistribution
+  SiteUrl:
+    Description: Public HTTPS URL of the portfolio site.
+    Value:
+      Fn::Sub: https://${SiteDistribution.DomainName}
+  ContactApiUrl:
+    Description: Contact form endpoint (POST). Set as REACT_APP_CONTACT_API_URL.
+    Value:
+      Fn::Sub: https://${ContactApi}.execute-api.${AWS::Region}.amazonaws.com/contact

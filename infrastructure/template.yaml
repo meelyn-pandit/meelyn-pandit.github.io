@@ -33,7 +33,7 @@ Parameters:
 # ---------------------------------------------------------------------------
 Globals:
   Function:
-    Runtime: nodejs20.x
+    Runtime: nodejs22.x
     Architectures: [arm64]
     Timeout: 10
     MemorySize: 256
@@ -72,12 +72,15 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Format: esm
+        # Emit .mjs so the Node runtime loads the bundle as ES modules.
+        OutExtension:
+          - .js=.mjs
         Minify: true
-        Target: node20
+        Target: node22
         Sourcemap: false
         EntryPoints:
           - index.mjs
-        # The AWS SDK v3 ships in the Node.js 20 runtime — don't bundle it.
+        # The AWS SDK v3 ships in the Node.js runtime — don't bundle it.
         External:
           - "@aws-sdk/*"
     Properties:
@@ -130,9 +133,9 @@ Resources:
           - POST
           - OPTIONS
         MaxAge: 600
-      Throttle:
-        BurstLimit: 20
-        RateLimit: 10
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 20
+        ThrottlingRateLimit: 10
 
   # -------------------------------------------------------------------------
   # S3 — private bucket holding the built React site

@@ -13,7 +13,7 @@ flowchart LR
     U[Browser] -->|HTTPS| CF[CloudFront CDN]
     CF -->|OAC, private| S3[(S3 bucket<br/>React build)]
     U -->|POST /contact| APIGW[API Gateway<br/>HTTP API + CORS]
-    APIGW --> L[Lambda<br/>Node.js 20]
+    APIGW --> L[Lambda<br/>Node.js 22]
     L -->|SendEmail| SES[Amazon SES]
     SES -->|email| G[meelyn.pandit@gmail.com]
     L -->|PutItem| DDB[(DynamoDB<br/>submissions)]

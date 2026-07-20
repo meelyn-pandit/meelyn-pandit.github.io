@@ -1,6 +1,6 @@
 // Contact form handler.
 // API Gateway (HTTP API) -> Lambda -> Amazon SES, with a copy of each
-// submission written to DynamoDB. Runs on Node.js 20 (ESM).
+// submission written to DynamoDB. Runs on Node.js 22 (ESM).
 
 import { randomUUID } from "node:crypto";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
