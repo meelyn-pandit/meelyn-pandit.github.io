@@ -75,6 +75,26 @@ Then set in the repo:
 - **Variables** (optional, defaults shown): `AWS_REGION=us-east-1`,
   `SENDER_EMAIL`, `RECIPIENT_EMAIL`, `ALLOWED_ORIGIN`.
 
+## Custom domain
+
+The stack serves on `*.cloudfront.net` by default. To use a custom domain,
+supply two parameters (the ACM cert **must** be in `us-east-1` and cover both
+the apex and `www`):
+
+```bash
+sam deploy --profile personal \
+  --parameter-overrides \
+    DomainName=meelynpandit.com \
+    CertificateArn=arn:aws:acm:us-east-1:<acct>:certificate/<id> \
+    AllowedOrigin=https://meelynpandit.com
+```
+
+When `DomainName` is set the distribution adds `meelynpandit.com` and
+`www.meelynpandit.com` as aliases and attaches the ACM cert (TLS 1.2_2021,
+SNI). Point Route 53 A/AAAA **alias** records for both names at the
+`DistributionDomainName` output (hosted-zone ID `Z2FDTNDATAQYW2` for all
+CloudFront aliases).
+
 ## Deploy manually
 
 ```bash
