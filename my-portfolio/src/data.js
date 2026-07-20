@@ -1,44 +1,63 @@
-import { RiJavascriptFill, RiReactjsFill } from "react-icons/ri";
-import { IoStatsChart } from "react-icons/io5";
-
 export const projects = [
-  
   {
-    title: "Anthropogenic noise alters parental beahvior and nestling developmental patterns, but not fledging condition.",
-    subtitle: "Dissertation Ch. 1",
-    text:
-      "Examined how anthropgenic noise affected parental care behavior and nestling development in Eastern Bluebirds (Sialia sialis)",
-    image: "./figure_6_edited.jpg",
+    title: "Self-Service Animal Movement Data Portal",
+    subtitle: "Cellular Tracking Technologies",
+    description:
+      "Built React and JavaScript interfaces for a self-service data portal, giving clients the ability to explore and analyze animal movement datasets independently.",
+    image: "./project-1.gif",
+    link: "https://celltracktech.com/",
+  },
+  {
+    title: "Distributed IoT Data Pipelines",
+    subtitle: "Cellular Tracking Technologies",
+    description:
+      "Developed, tested, and deployed scalable Node.js data pipelines for Raspberry Pi-based remote IoT servers, enabling near-real-time ingestion from distributed field sensors.",
+    image: "./project-2.gif",
+    link: "https://celltracktech.com/",
+  },
+  {
+    title: "Cross-Platform Billing Platform",
+    subtitle: "Cellular Tracking Technologies",
+    description:
+      "Built a billing platform integrating Flutter, the QuickBooks RESTful API, and MongoDB, from schema design through end-to-end delivery.",
+    image: "./project-3.gif",
+    link: "https://celltracktech.com/",
+  },
+  {
+    title: "Alexa Skill for Live Bird Song Audio",
+    subtitle: "Cellular Tracking Technologies",
+    description:
+      "Developed an Alexa Skill to livestream bird song audio using a CRUD-style API, tested and validated with Postman.",
+    image: "./project-4.gif",
+    link: "https://celltracktech.com/",
+  },
+];
+
+export const publications = [
+  {
+    title:
+      "Anthropogenic noise alters parental behavior and nestling developmental patterns, but not fledging condition.",
+    subtitle: "Behavioral Ecology",
+    description:
+      "Examined how anthropogenic noise affected parental care behavior and nestling development in Eastern Bluebirds (Sialia sialis).",
     link: "http://dx.doi.org/10.1093/beheco/arab015",
-    value: 'a',
   },
   {
-    title: "Environmental conditions lead to shifts in individual communication, which can cause cascading effects on soundscape composition.",
-    subtitle: "Dissertation Ch. 2",
-    text:
-      "Examined how aridity levels, which increased sound attenuation and led to reduced water resources, affected individual vocal behaviors and ultimately the entire vocal communication system of a population using an agent-based model.",
-    image: "./terrgrid_06-19_36.jpg",
+    title:
+      "Environmental conditions lead to shifts in individual communication, which can cause cascading effects on soundscape composition.",
+    subtitle: "Ecology and Evolution",
+    description:
+      "Examined how aridity levels, which increased sound attenuation and led to reduced water resources, affected individual vocal behaviors and the entire vocal communication system of a population using an agent-based model.",
     link: "https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.9359",
-    value: 'b',
   },
   {
-    title: "It’s not the heat, it’s the aridity: avian song activity and species diversity at the community level have consistent, negative responses to increasing aridity ",
-    subtitle: "Dissertation, Ch. 3",
-    text:
+    title:
+      "It's not the heat, it's the aridity: avian song activity and species diversity at the community level have consistent, negative responses to increasing aridity.",
+    subtitle: "Dissertation research",
+    description:
       "Examined if aridity affected vocal detectability and if supplemental water alleviated the cost of vocalizing under arid conditions.",
-    image: "./pabu_closeup.jpg",
-    link: "https://meelyn-pandit.github.io/", // need to create a check back soon link...
-    value: 'c',
+    link: "https://meelyn-pandit.github.io/",
   },
-  
-  // {
-  //   title: "Epic Todo App",
-  //   subtitle: "React Hooks",
-  //   description:
-  //     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium dolore rerum laborum iure enim sint nemo omnis voluptate exercitationem eius?",
-  //   image: "./project-4.gif",
-  //   link: "https://reactbootcamp.com",
-  // },
 ];
 
 export const research_interests = [
@@ -46,36 +65,25 @@ export const research_interests = [
     quote:
       "Understanding how increasing aridity due to climate change will affect individual avian vocal behavior, and how that will cascade into changes in the avian community soundscape.",
     image: "./sswma_landscape.JPEG",
-    // name: "Jesse Hicks",
-    // company: "Zoozle",
   },
   {
     quote:
       "Understanding the limits of behavioral flexibility in responding to extreme climate change conditions and anthropogenic disturbance.",
     image: "./pabu_singing.jpg",
-    // name: "Ruben Alvarez",
-    // company: "Dooble.io",
   },
 ];
 
-// export const skills = [
-//   {
-//     title: 'JavaScript',
-//     text: 'Developed code for the Sensor Station remote data logger in JavaScript and NodeJs',
-//     value: 'a',
-//     icon: <RiJavascriptFill />,
-//   },
-//   {
-//     title: 'React',
-//     text: 'Developed a data portal website using React components',
-//     value: 'b',
-//     icon: <RiReactjsFill />,
-//   },
-//   {
-//     title: 'R',
-//     text: 'Analyzed multiple datasets using R',
-//     value: 'c',
-//     icon: <IoStatsChart />,
-//   }
-
-// ];
+export const skills = [
+  "JavaScript / TypeScript",
+  "Python",
+  "React",
+  "Node.js",
+  "Flutter",
+  "SQL / PostgreSQL",
+  "MongoDB",
+  "AWS S3",
+  "TensorFlow",
+  "R",
+  "Git / GitHub",
+  "C++",
+];
