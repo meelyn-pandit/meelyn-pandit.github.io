@@ -4,23 +4,20 @@ export const projects = [
     subtitle: "Cellular Tracking Technologies",
     description:
       "Built React and JavaScript interfaces for a self-service data portal, giving clients the ability to explore and analyze animal movement datasets independently.",
-    image: "./project-1.gif",
-    link: "https://celltracktech.com/",
+    link: "https://portal.ctt-iow.com/",
   },
   {
     title: "Distributed IoT Data Pipelines",
     subtitle: "Cellular Tracking Technologies",
     description:
       "Developed, tested, and deployed scalable Node.js data pipelines for Raspberry Pi-based remote IoT servers, enabling near-real-time ingestion from distributed field sensors.",
-    image: "./project-2.gif",
     link: "https://celltracktech.com/",
   },
   {
-    title: "Cross-Platform Billing Platform",
+    title: "Flutter Billing Portal",
     subtitle: "Cellular Tracking Technologies",
     description:
       "Built a billing platform integrating Flutter, the QuickBooks RESTful API, and MongoDB, from schema design through end-to-end delivery.",
-    image: "./project-3.gif",
     link: "https://celltracktech.com/",
   },
   {
@@ -28,7 +25,6 @@ export const projects = [
     subtitle: "Cellular Tracking Technologies",
     description:
       "Developed an Alexa Skill to livestream bird song audio using a CRUD-style API, tested and validated with Postman.",
-    image: "./project-4.gif",
     link: "https://celltracktech.com/",
   },
 ];
