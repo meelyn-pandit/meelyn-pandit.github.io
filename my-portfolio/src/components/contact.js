@@ -1,25 +1,39 @@
 // src/components/Contact.js
 import React from "react";
-import {
-  Box, Flex, Heading, Text, FormControl, FormLabel, Input, Textarea, Button,
-} from "@chakra-ui/react";
+import { Box, Flex, Heading, Text, Button, chakra } from "@chakra-ui/react";
+import { Linkedin } from "react-bootstrap-icons";
+
+const LinkedinIcon = chakra(Linkedin);
+
+const LINKEDIN_URL = "https://www.linkedin.com/in/meelyn-pandit-ph-d-51915977/";
 
 export default function Contact() {
   return (
     <Box as="section" id="contact" position="relative">
+      <Flex maxW="6xl" mx="auto" px={5} py={10} direction="column" align="center" textAlign="center">
+        <Heading as="h2" color="white" size={{ base: "lg", sm: "xl" }} mb={1} fontWeight="medium">
+          Contact Me
+        </Heading>
+        <Text lineHeight="relaxed" mb={5} maxW="lg">
+          Have any questions about my work or background? Connect with me on LinkedIn:
+        </Text>
+        <Button
+          as="a"
+          href={LINKEDIN_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          leftIcon={<LinkedinIcon boxSize={5} />}
+          color="white"
+          bg="blue.500"
+          _hover={{ bg: "blue.600", textDecoration: "none" }}
+          fontSize="lg"
+          borderRadius="md">
+          Connect on LinkedIn
+        </Button>
+      </Flex>
+
+      {/* Contact form — saved for later use
       <Flex maxW="6xl" mx="auto" px={5} py={10} wrap={{ base: "wrap", sm: "nowrap" }}>
-        {/* <Box
-          w={{ base: "full", md: "1/2", lg: "2/3" }}
-          bg="gray.900"
-          borderRadius="lg"
-          overflow="hidden"
-          mr={{ sm: 10 }}
-          p={10}
-          display="flex"
-          alignItems="flex-end"
-          justifyContent="flex-start"
-          position="relative"
-        /> */}
         <Box
           as="form"
           name="contact"
@@ -62,6 +76,7 @@ export default function Contact() {
           </Button>
         </Box>
       </Flex>
+      */}
     </Box>
   );
 }
