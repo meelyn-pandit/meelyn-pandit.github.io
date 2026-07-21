@@ -1,7 +1,12 @@
 // src/components/Navbar.js
 import React from "react";
 import { Box, Flex, Link, HStack } from "@chakra-ui/react";
+import { NavLink as RouterNavLink } from "react-router-dom";
 import { ArrowRightSquareFill } from "react-bootstrap-icons";
+
+// react-router's NavLink adds a class of "active" to the matching route,
+// which we style via the `&.active` selector.
+const navLinkSx = { "&.active": { color: "white" } };
 
 export default function Navbar() {
   return (
@@ -14,7 +19,14 @@ export default function Navbar() {
         wrap="wrap"
         direction={{ base: "column", md: "row" }}
         align="center">
-        <Link href="#about" fontWeight="medium" color="white" fontSize="xl" mb={{ base: 4, md: 0 }}>
+        <Link
+          as={RouterNavLink}
+          to="/"
+          end
+          fontWeight="medium"
+          color="white"
+          fontSize="xl"
+          mb={{ base: 4, md: 0 }}>
           Home
         </Link>
         <HStack
@@ -29,13 +41,13 @@ export default function Navbar() {
           wrap="wrap"
           justify="center"
           fontSize="base">
-          <Link href="#projects" _hover={{ color: "white" }}>Projects</Link>
-          <Link href="#skills" _hover={{ color: "white" }}>Skills</Link>
-          <Link href="#publications" _hover={{ color: "white" }}>Publications</Link>
-          <Link href="#research-interests" _hover={{ color: "white" }}>Research Background</Link>
+          <Link as={RouterNavLink} to="/projects" sx={navLinkSx} _hover={{ color: "white" }}>Projects</Link>
+          <Link as={RouterNavLink} to="/skills" sx={navLinkSx} _hover={{ color: "white" }}>Skills</Link>
+          <Link as={RouterNavLink} to="/publications" sx={navLinkSx} _hover={{ color: "white" }}>Publications</Link>
         </HStack>
         <Link
-          href="#contact"
+          as={RouterNavLink}
+          to="/contact"
           display="inline-flex"
           alignItems="center"
           bg="gray.800"
@@ -43,6 +55,7 @@ export default function Navbar() {
           px={3}
           borderRadius="md"
           mt={{ base: 4, md: 0 }}
+          sx={navLinkSx}
           _hover={{ bg: "gray.700", textDecoration: "none" }}>
           Contact Me
           <ArrowRightSquareFill style={{ width: 16, height: 16, marginLeft: 4 }} />

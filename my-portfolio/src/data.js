@@ -56,16 +56,38 @@ export const publications = [
   },
 ];
 
-export const research_interests = [
+export const researchProjects = [
   {
-    quote:
-      "Understanding how increasing aridity due to climate change will affect individual avian vocal behavior, and how that will cascade into changes in the avian community soundscape.",
-    image: "./sswma_landscape.JPEG",
+    title: "Agent-Based Model of Acoustic Communication",
+    subtitle: "Ph.D. Research · Ecology and Evolution",
+    description:
+      "Designed and implemented an agent-based model simulating how increasing aridity — through greater sound attenuation and reduced water resources — reshapes individual vocal behavior and cascades into population-level shifts in soundscape composition.",
+    tags: ["Agent-Based Modeling", "Simulation", "R"],
+    link: "https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.9359",
   },
   {
-    quote:
-      "Understanding the limits of behavioral flexibility in responding to extreme climate change conditions and anthropogenic disturbance.",
-    image: "./pabu_singing.jpg",
+    title: "Bioacoustic Time-Series & Song-Activity Modeling",
+    subtitle: "Ph.D. Dissertation Research",
+    description:
+      "Processed large-scale passive acoustic monitoring data into structured time series to model avian song activity and community diversity against aridity gradients, quantifying consistent negative responses across space and time.",
+    tags: ["Time-Series Analysis", "Signal Processing", "Python", "R"],
+    link: "",
+  },
+  {
+    title: "Machine Learning for Automated Bird-Song Detection",
+    subtitle: "Ph.D. Research · Bioacoustics",
+    description:
+      "Applied machine learning to detect and classify bird vocalizations from thousands of hours of continuous field recordings, turning raw audio into analyzable detection datasets that powered downstream ecological models.",
+    tags: ["Machine Learning", "TensorFlow", "Audio Classification", "Python"],
+    link: "",
+  },
+  {
+    title: "Statistical Modeling of Anthropogenic Noise Effects",
+    subtitle: "Ph.D. Research · Behavioral Ecology",
+    description:
+      "Used mixed-effects statistical models to quantify how anthropogenic noise alters parental care behavior and nestling development in Eastern Bluebirds (Sialia sialis).",
+    tags: ["Statistical Modeling", "Mixed-Effects Models", "R"],
+    link: "http://dx.doi.org/10.1093/beheco/arab015",
   },
 ];
 

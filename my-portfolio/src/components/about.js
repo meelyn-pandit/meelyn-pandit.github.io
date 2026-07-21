@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Flex, Heading, Text, Link, Image } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
 
 export default function Home() {
   return (
@@ -31,7 +32,8 @@ export default function Home() {
           </Text>
           <Flex justify="center">
             <Link
-              href="#projects"
+              as={RouterLink}
+              to="/projects"
               display="inline-flex"
               color="white"
               bg="brand.500"
@@ -43,7 +45,8 @@ export default function Home() {
               Projects
             </Link>
             <Link
-              href="#contact"
+              as={RouterLink}
+              to="/contact"
               ml={4}
               display="inline-flex"
               color="gray.400"
