@@ -1,26 +1,10 @@
 import React from "react";
 import { Box, Flex, Heading, Text, Link, Image, chakra } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
 import { BookHalf } from "react-bootstrap-icons";
 import { projects, dataScience } from "../data";
 
 const BookIcon = chakra(BookHalf);
-
-// Field imagery that corresponds to the data-science work (shown in the
-// right-hand column beside the project list).
-const dataScienceImages = [
-  {
-    src: "./sswma_landscape.JPEG",
-    alt: "Arid grassland study landscape",
-    caption:
-      "Arid study landscape — the environmental gradient behind the aridity, soundscape, and time-series analyses.",
-  },
-  {
-    src: "./pabu_singing.jpg",
-    alt: "A bird vocalizing in the field",
-    caption:
-      "A study subject vocalizing — the raw acoustic signal behind the detection and modeling work.",
-  },
-];
 
 // Card for the software-engineering group: bordered box in a 2-up grid.
 function SoftwareCard({ project }) {
@@ -56,9 +40,10 @@ function SoftwareCard({ project }) {
   );
 }
 
-// Card for the data-science group: stacked list row; links out when a link exists.
-function DataScienceCard({ item }) {
-  const body = (
+// Text block for a data-science project. The summary routes to (or links out
+// to) the project; any journal link is rendered as a separate link beneath it.
+function ProjectText({ item }) {
+  const summary = (
     <>
       <Text letterSpacing="widest" fontSize="sm" fontWeight="medium" color="brand.400" mb={1}>
         {item.subtitle}
@@ -69,24 +54,72 @@ function DataScienceCard({ item }) {
       <Text lineHeight="relaxed">{item.description}</Text>
     </>
   );
-  const common = {
-    p: 4,
-    textAlign: "left",
-    borderTop: "1px solid",
-    borderColor: "gray.800",
+  const linkProps = { display: "block", _hover: { textDecoration: "none" } };
+  let summaryEl;
+  if (!item.link) {
+    summaryEl = <Box>{summary}</Box>;
+  } else if (item.link.startsWith("/")) {
+    // Internal routes navigate client-side.
+    summaryEl = <Link as={RouterLink} to={item.link} {...linkProps}>{summary}</Link>;
+  } else {
+    summaryEl = (
+      <Link href={item.link} target="_blank" rel="noopener noreferrer" {...linkProps}>{summary}</Link>
+    );
+  }
+
+  return (
+    <Box>
+      {summaryEl}
+      {item.journal && (
+        <Link
+          href={item.journal.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          display="inline-block"
+          mt={3}
+          fontSize="sm"
+          fontWeight="medium"
+          color="brand.400"
+          _hover={{ color: "brand.300" }}>
+          Read in {item.journal.name} &rarr;
+        </Link>
+      )}
+    </Box>
+  );
+}
+
+// Image or video that accompanies a data-science project row.
+function ProjectMedia({ media }) {
+  if (!media) return null;
+  // Figures/charts use `fit: "contain"` so they're never cropped; photos/video default to "cover".
+  const frame = {
+    borderRadius: "md",
+    w: "full",
+    maxH: "72",
+    objectFit: media.fit || "cover",
+    bg: media.bg || "black",
   };
-  return item.link ? (
-    <Link
-      href={item.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      {...common}
-      _hover={{ bg: "gray.800", textDecoration: "none" }}
-      transition="background-color 0.2s">
-      {body}
-    </Link>
-  ) : (
-    <Box {...common}>{body}</Box>
+  return (
+    <Box w="full">
+      {media.type === "video" ? (
+        <Box
+          as="video"
+          src={media.src}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-label={media.caption}
+          {...frame}
+        />
+      ) : (
+        <Image src={media.src} alt={media.alt} objectPosition="center" {...frame} />
+      )}
+      <Text fontSize="sm" color="gray.500" mt={2} lineHeight="short">
+        {media.caption}
+      </Text>
+    </Box>
   );
 }
 
@@ -118,71 +151,37 @@ export default function Projects() {
           </Flex>
         </Box>
 
-        {/* Sub-group: Data Science and Visualization */}
+        {/* Sub-group: Data Science and Visualization — one row per project so
+            each description sits beside its own media with clear spacing. */}
         <Box id="data-science">
           <Heading as="h2" size="lg" fontWeight="medium" color="white" mb={3}>
             Data Science and Visualization
           </Heading>
-          <Text maxW={{ lg: "2xl" }} mx="auto" lineHeight="relaxed" mb={10}>
+          <Text maxW={{ lg: "2xl" }} mx="auto" lineHeight="relaxed" mb={4}>
             Turning large, messy scientific datasets into models and clear
             visualizations — from agent-based simulations and machine learning
             to time-series and statistical analysis, grounded in peer-reviewed
             Ph.D. research.
           </Text>
-          <Flex
-            direction={{ base: "column", lg: "row" }}
-            gap={{ base: 8, lg: 12 }}
-            align="flex-start"
-            maxW={{ lg: "5xl" }}
-            mx="auto"
-            textAlign="left">
-            {/* Left column: project list */}
-            <Flex direction="column" flex="1" w="full">
-              {dataScience.map((item) => (
-                <DataScienceCard key={item.title} item={item} />
-              ))}
-            </Flex>
-            {/* Right column: corresponding media */}
-            <Flex direction="column" flex="1" w="full" gap={6} pt={{ lg: 4 }}>
-              {/* Agent-based model animation */}
-              <Box>
-                <Box
-                  as="video"
-                  src="./contemporary_timelapse.mp4"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  aria-label="Agent-based model animation of soundscape dynamics"
-                  borderRadius="md"
-                  w="full"
-                  maxH="72"
-                  objectFit="cover"
-                  bg="black"
-                />
-                <Text fontSize="sm" color="gray.500" mt={2} lineHeight="short">
-                  Agent-based model output — simulated soundscape dynamics under
-                  changing aridity.
-                </Text>
-              </Box>
-              {dataScienceImages.map((img) => (
-                <Box key={img.src}>
-                  <Image
-                    src={img.src}
-                    alt={img.alt}
-                    borderRadius="md"
-                    w="full"
-                    maxH="72"
-                    objectFit="cover"
-                    objectPosition="center"
-                  />
-                  <Text fontSize="sm" color="gray.500" mt={2} lineHeight="short">
-                    {img.caption}
-                  </Text>
+          <Flex direction="column" maxW={{ lg: "5xl" }} mx="auto">
+            {dataScience.map((item, i) => (
+              <Flex
+                key={item.title}
+                direction={{ base: "column", md: "row" }}
+                gap={{ base: 5, md: 10 }}
+                align="center"
+                textAlign="left"
+                py={{ base: 8, md: 12 }}
+                borderTop={i === 0 ? undefined : "1px solid"}
+                borderColor="gray.800">
+                <Box flex="1" w="full">
+                  <ProjectText item={item} />
                 </Box>
-              ))}
-            </Flex>
+                <Box flex="1" w="full">
+                  <ProjectMedia media={item.media} />
+                </Box>
+              </Flex>
+            ))}
           </Flex>
         </Box>
       </Box>

@@ -35,21 +35,44 @@ export const dataScience = [
     subtitle: "Agent-Based Modeling · R",
     description:
       "Built an agent-based model simulating how aridity-driven sound attenuation reshapes individual vocal behavior, then analyzed and visualized the cascading, population-level shifts in soundscape composition. Published in Ecology and Evolution.",
-    link: "https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.9359",
+    link: "/agent-based-model",
+    journal: { name: "Ecology and Evolution", url: "https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.9359" },
+    media: {
+      type: "video",
+      src: "/contemporary_timelapse.mp4",
+      caption: "Agent-based model output — simulated soundscape dynamics under changing aridity.",
+    },
   },
   {
     title: "ML-Powered Bioacoustic Monitoring & Analysis",
     subtitle: "Machine Learning · Time-Series · TensorFlow · Python · R",
     description:
       "Built an end-to-end pipeline that uses machine learning to detect and classify bird vocalizations across thousands of hours of field recordings, then models the resulting detection time series to quantify how avian song activity and community diversity respond to aridity across space and time.",
-    link: "/soundscape.html",
+    link: "/soundscape",
+    media: {
+      type: "image",
+      src: "/ag_pca_full.png",
+      alt: "3D PCA of acoustic indices (PC1–PC3) with vocalization and diversity loadings",
+      caption: "PCA of acoustic indices — reducing many bioacoustic features (ACI, ADI, number of vocalizations, species diversity) into their principal components.",
+      fit: "contain",
+      bg: "white",
+    },
   },
   {
     title: "Statistical Modeling of Anthropogenic Noise Effects",
     subtitle: "Statistical Modeling · Mixed-Effects Models · R",
     description:
       "Used mixed-effects models to quantify and visualize how anthropogenic noise alters parental care behavior and nestling development in Eastern Bluebirds (Sialia sialis). Published in Behavioral Ecology.",
-    link: "http://dx.doi.org/10.1093/beheco/arab015",
+    link: "/noise-effects",
+    journal: { name: "Behavioral Ecology", url: "http://dx.doi.org/10.1093/beheco/arab015" },
+    media: {
+      type: "image",
+      src: "/noise-visitation-rates.png",
+      alt: "Line chart of adult female visitation rates under control vs. noise treatments across nestling age",
+      caption: "Published Figure 2 (Behavioral Ecology) — adult female visitation rates under control vs. noise treatments across the brood cycle.",
+      fit: "contain",
+      bg: "white",
+    },
   },
 ];
 
