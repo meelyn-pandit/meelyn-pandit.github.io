@@ -29,43 +29,34 @@ export const projects = [
   },
 ];
 
-export const publications = [
+export const dataScience = [
   {
-    title:
-      "Anthropogenic noise alters parental behavior and nestling developmental patterns, but not fledging condition.",
-    subtitle: "Behavioral Ecology",
+    title: "Agent-Based Simulation of Soundscape Dynamics",
+    subtitle: "Agent-Based Modeling · R",
     description:
-      "Examined how anthropogenic noise affected parental care behavior and nestling development in Eastern Bluebirds (Sialia sialis).",
-    link: "http://dx.doi.org/10.1093/beheco/arab015",
-  },
-  {
-    title:
-      "Environmental conditions lead to shifts in individual communication, which can cause cascading effects on soundscape composition.",
-    subtitle: "Ecology and Evolution",
-    description:
-      "Examined how aridity levels, which increased sound attenuation and led to reduced water resources, affected individual vocal behaviors and the entire vocal communication system of a population using an agent-based model.",
+      "Built an agent-based model simulating how aridity-driven sound attenuation reshapes individual vocal behavior, then analyzed and visualized the cascading, population-level shifts in soundscape composition. Published in Ecology and Evolution.",
     link: "https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.9359",
   },
   {
-    title:
-      "It's not the heat, it's the aridity: avian song activity and species diversity at the community level have consistent, negative responses to increasing aridity.",
-    subtitle: "Dissertation research",
+    title: "Bioacoustic Time-Series & Community Diversity",
+    subtitle: "Time-Series Analysis · R · Data Visualization",
     description:
-      "Examined if aridity affected vocal detectability and if supplemental water alleviated the cost of vocalizing under arid conditions.",
-    link: "https://meelyn-pandit.github.io/",
-  },
-];
-
-export const research_interests = [
-  {
-    quote:
-      "Understanding how increasing aridity due to climate change will affect individual avian vocal behavior, and how that will cascade into changes in the avian community soundscape.",
-    image: "./sswma_landscape.JPEG",
+      "Processed thousands of hours of passive acoustic monitoring data into structured time series, modeling and visualizing how avian song activity and species diversity respond to aridity gradients across space and time.",
+    link: "",
   },
   {
-    quote:
-      "Understanding the limits of behavioral flexibility in responding to extreme climate change conditions and anthropogenic disturbance.",
-    image: "./pabu_singing.jpg",
+    title: "Machine Learning for Automated Bird-Song Detection",
+    subtitle: "Machine Learning · TensorFlow · Python",
+    description:
+      "Applied machine learning to detect and classify bird vocalizations in continuous field recordings, converting raw audio into structured detection datasets that fed downstream ecological models and visualizations.",
+    link: "",
+  },
+  {
+    title: "Statistical Modeling of Anthropogenic Noise Effects",
+    subtitle: "Statistical Modeling · Mixed-Effects Models · R",
+    description:
+      "Used mixed-effects models to quantify and visualize how anthropogenic noise alters parental care behavior and nestling development in Eastern Bluebirds (Sialia sialis). Published in Behavioral Ecology.",
+    link: "http://dx.doi.org/10.1093/beheco/arab015",
   },
 ];
 

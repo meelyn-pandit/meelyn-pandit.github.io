@@ -30,9 +30,8 @@ export default function Navbar() {
           justify="center"
           fontSize="base">
           <Link href="#projects" _hover={{ color: "white" }}>Projects</Link>
+          <Link href="#data-science" _hover={{ color: "white" }}>Data Science</Link>
           <Link href="#skills" _hover={{ color: "white" }}>Skills</Link>
-          <Link href="#publications" _hover={{ color: "white" }}>Publications</Link>
-          <Link href="#research-interests" _hover={{ color: "white" }}>Research Background</Link>
         </HStack>
         <Link
           href="#contact"
