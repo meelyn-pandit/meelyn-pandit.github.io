@@ -5,7 +5,6 @@ import Contact from "./components/contact";
 import Navbar from "./components/navbar";
 import Projects from "./components/projects";
 import Skills from "./components/skills";
-import DataScience from "./components/data_science";
 
 export default function App() {
   return (
@@ -13,7 +12,6 @@ export default function App() {
       <Navbar />
       <Home />
       <Projects />
-      <DataScience />
       <Skills />
       <Contact />
     </Box>

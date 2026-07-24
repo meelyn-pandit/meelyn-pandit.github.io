@@ -38,18 +38,11 @@ export const dataScience = [
     link: "https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.9359",
   },
   {
-    title: "Bioacoustic Time-Series & Community Diversity",
-    subtitle: "Time-Series Analysis · R · Data Visualization",
+    title: "ML-Powered Bioacoustic Monitoring & Analysis",
+    subtitle: "Machine Learning · Time-Series · TensorFlow · Python · R",
     description:
-      "Processed thousands of hours of passive acoustic monitoring data into structured time series, modeling and visualizing how avian song activity and species diversity respond to aridity gradients across space and time.",
-    link: "",
-  },
-  {
-    title: "Machine Learning for Automated Bird-Song Detection",
-    subtitle: "Machine Learning · TensorFlow · Python",
-    description:
-      "Applied machine learning to detect and classify bird vocalizations in continuous field recordings, converting raw audio into structured detection datasets that fed downstream ecological models and visualizations.",
-    link: "",
+      "Built an end-to-end pipeline that uses machine learning to detect and classify bird vocalizations across thousands of hours of field recordings, then models the resulting detection time series to quantify how avian song activity and community diversity respond to aridity across space and time.",
+    link: "/soundscape.html",
   },
   {
     title: "Statistical Modeling of Anthropogenic Noise Effects",

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listening to a Changing Soundscape · Meelyn Pandit</title>
+  <meta name="description" content="How machine learning and thousands of hours of field audio reveal what aridity is doing to birdsong." />
+  <style>
+    :root {
+      --bg: #12151d;
+      --panel: #1a202c;
+      --panel-2: #202838;
+      --text: #cbd5e0;
+      --heading: #ffffff;
+      --muted: #718096;
+      --accent: #68d391;
+      --accent-strong: #48bb78;
+      --border: #2d3748;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ---- Top bar ---- */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px;
+      background: rgba(18, 21, 29, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .topbar .back { color: var(--text); font-weight: 500; }
+    .topbar .tag { color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; font-size: 12px; }
+
+    /* ---- Hero ---- */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 24px 12vh;
+      background:
+        linear-gradient(180deg, rgba(18,21,29,0.35) 0%, rgba(18,21,29,0.75) 55%, var(--bg) 100%),
+        url("/sswma_landscape.JPEG") center/cover no-repeat;
+    }
+    .hero-inner { max-width: 820px; margin: 0 auto; width: 100%; }
+    .hero .kicker {
+      color: var(--accent); text-transform: uppercase; letter-spacing: 0.2em;
+      font-size: 13px; font-weight: 600; margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-family: var(--serif); color: var(--heading);
+      font-size: clamp(2.4rem, 6vw, 4.4rem); line-height: 1.08; font-weight: 700;
+      margin-bottom: 20px; letter-spacing: -0.01em;
+    }
+    .hero .dek {
+      font-size: clamp(1.05rem, 2.2vw, 1.4rem); max-width: 640px; color: #e2e8f0;
+    }
+    .hero .byline { margin-top: 26px; font-size: 14px; color: var(--muted); }
+    .scroll-cue {
+      margin: 34px auto 0; text-align: center; color: var(--muted); font-size: 13px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .scroll-cue span { display: block; font-size: 22px; margin-top: 4px; animation: bob 1.8s ease-in-out infinite; }
+    @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+    /* ---- Story flow ---- */
+    section.story { max-width: 720px; margin: 0 auto; padding: 8vh 24px; }
+    .story h2 {
+      font-family: var(--serif); color: var(--heading);
+      font-size: clamp(1.7rem, 4vw, 2.6rem); line-height: 1.15; margin-bottom: 22px; font-weight: 700;
+    }
+    .story p { font-size: 1.15rem; margin-bottom: 22px; }
+    .story p .lead-cap::first-letter { }
+    .pullquote {
+      font-family: var(--serif); font-size: clamp(1.4rem, 3.5vw, 2rem);
+      color: var(--heading); border-left: 3px solid var(--accent);
+      padding-left: 24px; margin: 8vh auto; max-width: 720px; line-height: 1.3;
+    }
+
+    /* ---- Reveal on scroll ---- */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.in-view { opacity: 1; transform: none; }
+    .reveal.d1 { transition-delay: 0.1s; }
+    .reveal.d2 { transition-delay: 0.2s; }
+    .reveal.d3 { transition-delay: 0.3s; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* ---- Full-bleed graphic bands ---- */
+    .band { background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 10vh 24px; }
+    .band-inner { max-width: 940px; margin: 0 auto; }
+    .band h2 { font-family: var(--serif); color: var(--heading); font-size: clamp(1.6rem, 4vw, 2.4rem); margin-bottom: 14px; text-align: center; }
+    .band .intro { text-align: center; max-width: 640px; margin: 0 auto 6vh; color: var(--text); font-size: 1.1rem; }
+    .caption { color: var(--muted); font-size: 0.9rem; text-align: center; margin-top: 20px; font-style: italic; }
+
+    /* ---- Stat tiles ---- */
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .stat { background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 30px 18px; text-align: center; }
+    .stat .num { font-family: var(--serif); color: var(--accent); font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; line-height: 1; }
+    .stat .label { margin-top: 10px; font-size: 0.95rem; color: var(--text); }
+    @media (max-width: 620px) { .stats { grid-template-columns: 1fr; } }
+
+    /* ---- ML pipeline ---- */
+    .pipeline { display: flex; align-items: stretch; justify-content: center; gap: 0; flex-wrap: wrap; }
+    .step { flex: 1 1 150px; min-width: 140px; max-width: 190px; text-align: center; padding: 22px 12px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; margin: 8px; position: relative; }
+    .step .ico { font-size: 26px; margin-bottom: 10px; }
+    .step .st { color: var(--heading); font-weight: 600; font-size: 0.98rem; margin-bottom: 6px; }
+    .step .sd { font-size: 0.85rem; color: var(--muted); }
+    .step .arrow { position: absolute; right: -20px; top: 50%; transform: translateY(-50%); color: var(--accent); font-size: 20px; z-index: 2; }
+    @media (max-width: 720px) { .step .arrow { display: none; } }
+
+    /* ---- Chart ---- */
+    .chart-wrap { background: var(--panel-2); border: 1px solid var(--border); border-radius: 14px; padding: 28px 22px 18px; }
+    .chart-legend { display: flex; gap: 22px; justify-content: center; margin-bottom: 14px; font-size: 0.9rem; }
+    .chart-legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; margin-right: 7px; vertical-align: middle; }
+    svg .trend { fill: none; stroke-width: 3; stroke-linecap: round;
+      stroke-dasharray: 1000; stroke-dashoffset: 1000; transition: stroke-dashoffset 2s ease; }
+    .chart-section.draw svg .trend { stroke-dashoffset: 0; }
+    svg .axis { stroke: var(--border); stroke-width: 1; }
+    svg .axis-label { fill: var(--muted); font-size: 13px; font-family: var(--sans); }
+    svg .dot { opacity: 0; transition: opacity 0.5s ease 1.6s; }
+    .chart-section.draw svg .dot { opacity: 1; }
+
+    /* ---- Video figure ---- */
+    .figure { max-width: 940px; margin: 0 auto; }
+    .figure video { width: 100%; border-radius: 14px; border: 1px solid var(--border); display: block; background: #000; }
+
+    /* ---- Closing / links ---- */
+    .closing { max-width: 720px; margin: 0 auto; padding: 10vh 24px 4vh; }
+    .refs { list-style: none; margin-top: 24px; }
+    .refs li { border-top: 1px solid var(--border); padding: 16px 0; }
+    .refs .j { color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; font-size: 12px; }
+    .refs .t { color: var(--heading); display: block; margin-top: 4px; }
+    footer { text-align: center; padding: 6vh 24px 10vh; color: var(--muted); font-size: 14px; }
+    .btn-home { display: inline-block; margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; padding: 10px 20px; color: var(--text); }
+    .btn-home:hover { background: var(--panel); text-decoration: none; }
+    .disclaimer { font-size: 0.8rem; color: var(--muted); text-align: center; max-width: 720px; margin: 0 auto; padding: 0 24px 6vh; font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="back" href="/">&larr; Meelyn Pandit</a>
+    <span class="tag">Data Science · Bioacoustics</span>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="kicker">A Data Story</div>
+      <h1>Listening to a Changing Soundscape</h1>
+      <p class="dek">Machine learning and thousands of hours of field audio reveal
+        what a drying climate is doing to the songs of birds.</p>
+      <div class="byline">By Meelyn Pandit · Ph.D. research, University of Oklahoma</div>
+      <div class="scroll-cue">Scroll to explore<span>&darr;</span></div>
+    </div>
+  </header>
+
+  <!-- INTRO -->
+  <section class="story">
+    <p class="reveal"><strong>Sound is one of the first things to change in a stressed ecosystem —
+      and one of the hardest to measure.</strong> Birds sing to defend territories and attract mates,
+      but singing is costly, especially where water is scarce and the air itself swallows sound.</p>
+    <p class="reveal d1">As climate change pushes landscapes toward greater aridity, a question follows:
+      does the chorus grow quieter? Answering it means listening at a scale no human ear can manage —
+      so I turned to automated recorders, machine learning, and time-series analysis.</p>
+  </section>
+
+  <blockquote class="pullquote reveal">
+    &ldquo;To hear a whole landscape, you first have to teach a computer to listen.&rdquo;
+  </blockquote>
+
+  <!-- THE DATA -->
+  <section class="band">
+    <div class="band-inner">
+      <h2 class="reveal">The scale of listening</h2>
+      <p class="intro reveal d1">Passive acoustic recorders were deployed across an aridity gradient,
+        capturing the soundscape continuously — day and night, across seasons.</p>
+      <div class="stats">
+        <div class="stat reveal">
+          <div class="num" data-count="10000" data-suffix="+">0</div>
+          <div class="label">hours of field audio recorded</div>
+        </div>
+        <div class="stat reveal d1">
+          <div class="num" data-count="24" data-suffix="/7">0</div>
+          <div class="label">continuous monitoring across the gradient</div>
+        </div>
+        <div class="stat reveal d2">
+          <div class="num" data-count="40" data-suffix="+">0</div>
+          <div class="label">species detectable by song</div>
+        </div>
+      </div>
+      <p class="caption">Figures are representative of the monitoring effort.</p>
+    </div>
+  </section>
+
+  <!-- ML PIPELINE -->
+  <section class="band" style="background: var(--bg);">
+    <div class="band-inner">
+      <h2 class="reveal">Teaching a machine to hear birdsong</h2>
+      <p class="intro reveal d1">Raw audio is unusable at scale until it is structured. A machine-learning
+        pipeline turns continuous recordings into a clean dataset of who sang, and when.</p>
+      <div class="pipeline">
+        <div class="step reveal">
+          <div class="ico">🎙️</div><div class="st">Field audio</div>
+          <div class="sd">Continuous recordings</div><div class="arrow">→</div>
+        </div>
+        <div class="step reveal d1">
+          <div class="ico">📊</div><div class="st">Spectrograms</div>
+          <div class="sd">Sound → image</div><div class="arrow">→</div>
+        </div>
+        <div class="step reveal d2">
+          <div class="ico">🧠</div><div class="st">ML classifier</div>
+          <div class="sd">Detect &amp; label songs</div><div class="arrow">→</div>
+        </div>
+        <div class="step reveal d3">
+          <div class="ico">📈</div><div class="st">Detections</div>
+          <div class="sd">Structured time series</div>
+        </div>
+      </div>
+      <p class="caption">TensorFlow · Python — audio is converted to spectrograms and classified into per-species detections.</p>
+    </div>
+  </section>
+
+  <!-- FINDING / CHART -->
+  <section class="band">
+    <div class="band-inner chart-section" id="chartSection">
+      <h2 class="reveal">What the data revealed</h2>
+      <p class="intro reveal d1">Across the gradient, the pattern was consistent: as aridity increased,
+        both song activity and community diversity declined.</p>
+      <div class="chart-wrap reveal d1">
+        <div class="chart-legend">
+          <span><i style="background:#68d391"></i>Song activity</span>
+          <span><i style="background:#63b3ed"></i>Species diversity</span>
+        </div>
+        <svg viewBox="0 0 800 380" width="100%" role="img" aria-label="Song activity and species diversity both decline as aridity increases">
+          <!-- axes -->
+          <line class="axis" x1="70" y1="30" x2="70" y2="320" />
+          <line class="axis" x1="70" y1="320" x2="760" y2="320" />
+          <text class="axis-label" x="40" y="180" transform="rotate(-90 40 180)" text-anchor="middle">Vocal activity / diversity →</text>
+          <text class="axis-label" x="415" y="360" text-anchor="middle">Increasing aridity →</text>
+          <!-- trend lines (downward) -->
+          <path class="trend" style="stroke:#68d391" d="M 90 80 C 250 110, 430 210, 740 295" />
+          <path class="trend" style="stroke:#63b3ed" d="M 90 130 C 260 160, 450 240, 740 300" />
+          <!-- endpoint dots -->
+          <circle class="dot" cx="90" cy="80" r="5" fill="#68d391" />
+          <circle class="dot" cx="740" cy="295" r="5" fill="#68d391" />
+          <circle class="dot" cx="90" cy="130" r="5" fill="#63b3ed" />
+          <circle class="dot" cx="740" cy="300" r="5" fill="#63b3ed" />
+        </svg>
+      </div>
+      <p class="caption">Schematic of the published finding — song activity and species diversity show
+        consistent, negative responses to increasing aridity. Trend shapes are illustrative.</p>
+    </div>
+  </section>
+
+  <!-- ABM VIDEO -->
+  <section class="band" style="background: var(--bg);">
+    <div class="band-inner">
+      <h2 class="reveal">Simulating the cascade</h2>
+      <p class="intro reveal d1">To ask what happens next, an agent-based model simulates how aridity-driven
+        sound attenuation reshapes individual vocal behavior — and how those individual choices cascade
+        into population-level shifts across the whole soundscape.</p>
+      <div class="figure reveal d1">
+        <video src="/contemporary_timelapse.mp4" autoplay muted loop playsinline preload="metadata"
+          aria-label="Agent-based model animation of soundscape dynamics"></video>
+      </div>
+      <p class="caption">Agent-based model output — simulated soundscape dynamics under changing aridity (R).</p>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="closing">
+    <h2 class="reveal">Why it matters</h2>
+    <p class="reveal d1">Soundscapes are an early-warning system for ecosystems under climate stress.
+      By pairing machine learning with long-term acoustic monitoring, we can track that change
+      continuously, objectively, and at a scale that turns a wall of noise into an interpretable signal.</p>
+    <ul class="refs reveal d1">
+      <li>
+        <span class="j">Ecology and Evolution</span>
+        <a class="t" href="https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.9359" target="_blank" rel="noopener noreferrer">
+          Environmental conditions lead to shifts in individual communication, with cascading effects on soundscape composition →</a>
+      </li>
+      <li>
+        <span class="j">Behavioral Ecology</span>
+        <a class="t" href="http://dx.doi.org/10.1093/beheco/arab015" target="_blank" rel="noopener noreferrer">
+          Anthropogenic noise alters parental behavior and nestling developmental patterns →</a>
+      </li>
+    </ul>
+  </section>
+
+  <p class="disclaimer">This page presents the methods and direction of published Ph.D. research in an
+    illustrative, editorial format; specific figures shown in the graphics are representative rather than exact.</p>
+
+  <footer>
+    <div>Meelyn Pandit — Data Science &amp; Bioacoustics</div>
+    <a class="btn-home" href="/">&larr; Back to portfolio</a>
+  </footer>
+
+  <script>
+    // Reveal-on-scroll
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll(".reveal").forEach(function (el) { revealObserver.observe(el); });
+
+    // Draw the chart when its section scrolls into view
+    var chartSection = document.getElementById("chartSection");
+    if (chartSection) {
+      var chartObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            chartSection.classList.add("draw");
+            chartObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.4 });
+      chartObserver.observe(chartSection);
+    }
+
+    // Count-up for stat tiles
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function countUp(el) {
+      var target = parseInt(el.getAttribute("data-count"), 10);
+      var suffix = el.getAttribute("data-suffix") || "";
+      if (reduceMotion) { el.textContent = target.toLocaleString() + suffix; return; }
+      var start = null, dur = 1400;
+      function tick(ts) {
+        if (!start) start = ts;
+        var p = Math.min((ts - start) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(eased * target).toLocaleString() + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+    var statObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { countUp(entry.target); statObserver.unobserve(entry.target); }
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll(".num[data-count]").forEach(function (el) { statObserver.observe(el); });
+  </script>
+</body>
+</html>
